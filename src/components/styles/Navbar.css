@@ -1,0 +1,85 @@
+/* General Navbar Styling */
+.navbar {
+  position: fixed;  /* Keeps navbar at the top */
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: white;  /* Ensure it stands out */
+  z-index: 1000;  /* Keep it above other elements */
+  padding: 15px 20px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for better separation */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Logo Styling */
+.logo a {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #14279B;
+  text-decoration: none;
+}
+
+/* Navigation Links */
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-links a {
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.nav-links a:hover {
+  color: #14279B;
+}
+
+/* Auth Buttons Container */
+.auth-links {
+  display: flex;
+  gap: 20px;
+}
+
+/* Login Button */
+.btn-login {
+  background: none;
+  color: #14279B;
+  border: 2px solid #14279B;
+  padding: 10px 22px;
+  border-radius: 25px;
+  font-weight: bold;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-login:hover {
+  background: #14279B;
+  color: white;
+  box-shadow: 0px 4px 10px rgba(20, 39, 155, 0.3);
+  transform: scale(1.05);
+}
+
+/* Signup Button */
+.btn-signup {
+  background: linear-gradient(135deg, #FFD700, #FFC107);
+  color: black;
+  padding: 10px 24px;
+  border-radius: 25px;
+  font-weight: bold;
+  border: none;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  margin-right: 20px;
+  margin-left: -20px;
+}
+
+.btn-signup:hover {
+  background: linear-gradient(135deg, #E6C200, #D1A900);
+  box-shadow: 0px 4px 10px rgba(255, 215, 0, 0.4);
+  transform: scale(1.05);
+}
