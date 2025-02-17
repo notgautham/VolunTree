@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 import ImageCarousel from "../components/ImageCarousel";
 
-/* ========================
+/* =========================
    1. Global Style
    ======================== */
 const GlobalStyle = createGlobalStyle`
