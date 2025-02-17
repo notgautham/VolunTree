@@ -1,18 +1,573 @@
-import React from "react";
+import React, { useRef, useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import styled, { createGlobalStyle, keyframes } from "styled-components";
+import ImageCarousel from "../components/ImageCarousel"; // If you use it; otherwise remove
 
+/* ========================
+   1. Global Style
+   ======================== */
+const GlobalStyle = createGlobalStyle`
+  /* Basic reset */
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  html, body {
+    width: 100%;
+    min-height: 100%;
+  }
+  
+  /* Subdued pastel gradient background */
+  body {
+    font-family: "Poppins", sans-serif;
+    color: #2d3142;
+    background: linear-gradient(135deg, #fff8e8 0%, #faecd3 100%);
+    overflow-x: hidden;
+  }
+`;
 
-const Initiatives = () => {
-  return (
-    <Container maxW="container.md" py={10}>
-      <Heading as="h1" size="xl" color="blue.700" mb={4}>
-        Our Initiatives
-      </Heading>
-      <Text fontSize="lg" color="gray.600">
-        We organize beach cleanups, old clothes donation drives, elderly care visits, and 
-        many more social impact programs to make our community a better place.
-      </Text>
-    </Container>
-  );
+/* ========================
+   2. Scroll Animation Hook
+   ======================== */
+const useScrollAnimation = () => {
+  const ref = useRef(null);
+  const [isVisible, setVisible] = useState(false);
+  
+  useEffect(() => {
+    const currentRef = ref.current;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisible(true);
+          observer.unobserve(currentRef);
+        }
+      },
+      { threshold: 0.1 }
+    );
+    if (currentRef) {
+      observer.observe(currentRef);
+    }
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
+  }, []);
+  
+  return [ref, isVisible];
 };
 
-export default Initiatives;
+/* ========================
+   3. Animations
+   ======================== */
+const fadeUp = keyframes`
+  0% { opacity: 0; transform: translateY(30px); }
+  100% { opacity: 1; transform: translateY(0); }
+`;
+
+const float = keyframes`
+  0% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-20px) rotate(10deg); }
+  100% { transform: translateY(0) rotate(0deg); }
+`;
+
+const spin = keyframes`
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+`;
+
+const swirl = keyframes`
+  0%   { transform: rotate(0deg) translate(0px, 0px); }
+  25%  { transform: rotate(90deg) translate(10px, -10px); }
+  50%  { transform: rotate(180deg) translate(-10px, 10px); }
+  75%  { transform: rotate(270deg) translate(10px, -10px); }
+  100% { transform: rotate(360deg) translate(0px, 0px); }
+`;
+
+/* ========================
+   4. Styled Components
+   ======================== */
+
+const InitiativesContainer = styled.div`
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+`;
+
+const BackgroundShapesContainer = styled.div`
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+`;
+
+const Shape = styled.div`
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.15;
+`;
+
+/* Define 41 circles (all must be defined, including Circle3) */
+const Circle1 = styled(Shape)`
+  width: 160px; height: 160px; top: -40px; left: -60px; background: #fa92b2;
+  animation: ${float} 7s ease-in-out infinite;
+`;
+const Circle2 = styled(Shape)`
+  width: 100px; height: 100px; top: 30%; right: 5%; background: #9b82f3;
+  animation: ${spin} 12s linear infinite;
+`;
+const Circle3 = styled(Shape)`
+  width: 180px; height: 180px; top: 55%; left: 10%; background: #f9cf61;
+  animation: ${float} 8s ease-in-out infinite;
+`;
+const Circle4 = styled(Shape)`
+  width: 220px; height: 220px; top: 20%; left: 40%; background: #52c7ee;
+  animation: ${swirl} 10s linear infinite;
+`;
+const Circle5 = styled(Shape)`
+  width: 140px; height: 140px; top: 70%; right: 20%; background: #fc8366;
+  animation: ${spin} 14s linear infinite;
+`;
+const Circle6 = styled(Shape)`
+  width: 120px; height: 120px; top: 80%; left: 5%; background: #d389fc;
+  animation: ${float} 9s ease-in-out infinite;
+`;
+const Circle7 = styled(Shape)`
+  width: 100px; height: 100px; top: 10%; right: 25%; background: #8efcc1;
+  animation: ${swirl} 6s linear infinite;
+`;
+const Circle8 = styled(Shape)`
+  width: 150px; height: 150px; bottom: -50px; left: 20%; background: #8093fc;
+  animation: ${spin} 15s linear infinite;
+`;
+const Circle9 = styled(Shape)`
+  width: 200px; height: 200px; top: 40%; left: -60px; background: #ffb7df;
+  animation: ${float} 8s ease-in-out infinite;
+`;
+const Circle10 = styled(Shape)`
+  width: 100px; height: 100px; bottom: 0; right: 0; background: #fcaf3e;
+  animation: ${swirl} 9s linear infinite;
+`;
+const Circle11 = styled(Shape)`
+  width: 170px; height: 170px; top: 15%; right: 10%; background: #fcdf66;
+  animation: ${float} 7.5s ease-in-out infinite;
+`;
+const Circle12 = styled(Shape)`
+  width: 90px; height: 90px; bottom: 15%; left: 25%; background: #d3fc66;
+  animation: ${spin} 15s linear infinite;
+`;
+const Circle13 = styled(Shape)`
+  width: 130px; height: 130px; top: 75%; left: 65%; background: #66fc8f;
+  animation: ${float} 10s ease-in-out infinite;
+`;
+const Circle14 = styled(Shape)`
+  width: 190px; height: 190px; top: 85%; right: 0; background: #66fcf2;
+  animation: ${swirl} 11s linear infinite;
+`;
+const Circle15 = styled(Shape)`
+  width: 80px; height: 80px; top: 25%; right: 40%; background: #857df5;
+  animation: ${spin} 9s linear infinite;
+`;
+const Circle16 = styled(Shape)`
+  width: 110px; height: 110px; bottom: 25%; left: 45%; background: #f57d93;
+  animation: ${float} 8s ease-in-out infinite;
+`;
+const Circle17 = styled(Shape)`
+  width: 90px; height: 90px; top: 5%; left: 45%; background: #7df5aa;
+  animation: ${swirl} 12s linear infinite;
+`;
+const Circle18 = styled(Shape)`
+  width: 150px; height: 150px; bottom: 20%; right: 10%; background: #f5b27d;
+  animation: ${spin} 12s linear infinite;
+`;
+const Circle19 = styled(Shape)`
+  width: 100px; height: 100px; top: 60%; right: 40%; background: #7df5f5;
+  animation: ${float} 8s ease-in-out infinite;
+`;
+const Circle20 = styled(Shape)`
+  width: 220px; height: 220px; bottom: 10px; left: -80px; background: #66ecfc;
+  animation: ${swirl} 14s linear infinite;
+`;
+const Circle21 = styled(Shape)`
+  width: 100px; height: 100px; top: 35%; left: 30%; background: #fa92b2;
+  animation: ${spin} 16s linear infinite;
+`;
+const Circle22 = styled(Shape)`
+  width: 110px; height: 110px; top: 75%; right: 15%; background: #fcaf3e;
+  animation: ${float} 7s ease-in-out infinite;
+`;
+const Circle23 = styled(Shape)`
+  width: 120px; height: 120px; top: 2%; right: 2%; background: #fa92b2;
+  animation: ${spin} 14s linear infinite;
+`;
+const Circle24 = styled(Shape)`
+  width: 140px; height: 140px; bottom: 30%; left: 3%; background: #52c7ee;
+  animation: ${swirl} 9s linear infinite;
+`;
+const Circle25 = styled(Shape)`
+  width: 80px; height: 80px; top: 28%; left: 50%; background: #d389fc;
+  animation: ${float} 6.5s ease-in-out infinite;
+`;
+const Circle26 = styled(Shape)`
+  width: 200px; height: 200px; top: 50%; left: 80%; background: #8efcc1;
+  animation: ${swirl} 10s linear infinite;
+`;
+const Circle27 = styled(Shape)`
+  width: 180px; height: 180px; bottom: 0; right: 45%; background: #8093fc;
+  animation: ${spin} 15s linear infinite;
+`;
+const Circle28 = styled(Shape)`
+  width: 90px; height: 90px; bottom: 10%; left: 35%; background: #66ecfc;
+  animation: ${float} 9s ease-in-out infinite;
+`;
+const Circle29 = styled(Shape)`
+  width: 130px; height: 130px; top: 15%; left: 20%; background: #fc8366;
+  animation: ${spin} 13s linear infinite;
+`;
+const Circle30 = styled(Shape)`
+  width: 150px; height: 150px; top: 45%; right: 30%; background: #f9cf61;
+  animation: ${float} 8.5s ease-in-out infinite;
+`;
+const Circle31 = styled(Shape)`
+  width: 200px; height: 200px; bottom: 35%; left: 0; background: #ffb7df;
+  animation: ${swirl} 12s linear infinite;
+`;
+const Circle32 = styled(Shape)`
+  width: 100px; height: 100px; top: 85%; right: 25%; background: #8efcc1;
+  animation: ${float} 10s ease-in-out infinite;
+`;
+const Circle33 = styled(Shape)`
+  width: 140px; height: 140px; top: 15%; left: 55%; background: #7df5f5;
+  animation: ${spin} 16s linear infinite;
+`;
+const Circle34 = styled(Shape)`
+  width: 90px; height: 90px; top: 35%; right: 15%; background: #66fc8f;
+  animation: ${swirl} 14s linear infinite;
+`;
+const Circle35 = styled(Shape)`
+  width: 110px; height: 110px; bottom: 45%; right: 25%; background: #fcdf66;
+  animation: ${float} 7.5s ease-in-out infinite;
+`;
+const Circle36 = styled(Shape)`
+  width: 220px; height: 220px; top: 0; right: 30%; background: #f57d93;
+  animation: ${spin} 15s linear infinite;
+`;
+const Circle37 = styled(Shape)`
+  width: 160px; height: 160px; bottom: 5%; left: 60%; background: #66ecfc;
+  animation: ${swirl} 9s linear infinite;
+`;
+const Circle38 = styled(Shape)`
+  width: 120px; height: 120px; top: 55%; right: 10%; background: #fa92b2;
+  animation: ${float} 7s ease-in-out infinite;
+`;
+const Circle39 = styled(Shape)`
+  width: 210px; height: 210px; bottom: 15%; left: 10%; background: #9b82f3;
+  animation: ${spin} 11s linear infinite;
+`;
+const Circle40 = styled(Shape)`
+  width: 100px; height: 100px; top: 70%; right: 50%; background: #fcaf3e;
+  animation: ${float} 10s ease-in-out infinite;
+`;
+const Circle41 = styled(Shape)`
+  width: 140px; height: 140px; bottom: 0; right: 60%; background: #d389fc;
+  animation: ${swirl} 13s linear infinite;
+`;
+
+/* Animated sections with white box styling */
+const AnimatedSection = styled.section`
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  animation: ${(props) => (props.visible ? fadeUp : "none")} 0.8s ease-out forwards;
+  position: relative;
+  z-index: 1;
+  padding: ${(props) => (props.isHero ? "8rem 2rem 4rem" : "4rem 2rem")};
+`;
+
+const SectionBox = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #ffffff;
+  border-radius: 10px;
+  padding: 3rem 2rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+`;
+
+const SectionSubtitle = styled.p`
+  font-size: 1.1rem;
+  text-align: center;
+  color: #4a4a4a;
+  max-width: 800px;
+  margin: 0.5rem auto 2rem;
+  line-height: 1.7;
+`;
+
+const Highlight = styled.span`
+  color: #f9cf61;
+  font-weight: 700;
+`;
+
+/* Card Grid for initiatives */
+const CardGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+`;
+
+const Card = styled.div`
+  flex: 1 1 280px;
+  max-width: 320px;
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0px 4px 12px rgba(46, 58, 89, 0.05);
+  padding: 2rem;
+  text-align: center;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  margin: 0 auto;
+  
+  &:hover {
+    box-shadow: 0 8px 24px rgba(46, 58, 89, 0.12);
+    transform: translateY(-3px);
+  }
+  
+  h3 {
+    margin: 1rem 0;
+    font-weight: 600;
+  }
+  
+  p {
+    color: #5c6773;
+    line-height: 1.4;
+  }
+`;
+
+const CardIcon = styled.div`
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #2d3142;
+`;
+
+/* ========================
+   INITIATIVES COMPONENT
+   ======================== */
+export default function Initiatives() {
+  const [heroRef, heroVisible] = useScrollAnimation();
+  const [featuredRef, featuredVisible] = useScrollAnimation();
+  const [statsRef, statsVisible] = useScrollAnimation();
+  const [eventsRef, eventsVisible] = useScrollAnimation();
+  const [communityRef, communityVisible] = useScrollAnimation();
+  
+  return (
+    <>
+      <GlobalStyle />
+      <InitiativesContainer>
+        {/* Background Shapes */}
+        <BackgroundShapesContainer>
+          <Circle1 />
+          <Circle2 />
+          <Circle3 />
+          <Circle4 />
+          <Circle5 />
+          <Circle6 />
+          <Circle7 />
+          <Circle8 />
+          <Circle9 />
+          <Circle10 />
+          <Circle11 />
+          <Circle12 />
+          <Circle13 />
+          <Circle14 />
+          <Circle15 />
+          <Circle16 />
+          <Circle17 />
+          <Circle18 />
+          <Circle19 />
+          <Circle20 />
+          <Circle21 />
+          <Circle22 />
+          <Circle23 />
+          <Circle24 />
+          <Circle25 />
+          <Circle26 />
+          <Circle27 />
+          <Circle28 />
+          <Circle29 />
+          <Circle30 />
+          <Circle31 />
+          <Circle32 />
+          <Circle33 />
+          <Circle34 />
+          <Circle35 />
+          <Circle36 />
+          <Circle37 />
+          <Circle38 />
+          <Circle39 />
+          <Circle40 />
+          <Circle41 />
+        </BackgroundShapesContainer>
+        
+        {/* HERO SECTION */}
+        <AnimatedSection ref={heroRef} visible={heroVisible} isHero>
+          <SectionBox>
+            <SectionTitle>Our Initiatives</SectionTitle>
+            <SectionSubtitle>
+              Empowering Chennai through impactful volunteering programs.
+            </SectionSubtitle>
+            <SectionSubtitle>
+              Join us as we drive change across environmental, social, health, and educational sectors.
+            </SectionSubtitle>
+          </SectionBox>
+        </AnimatedSection>
+        
+        {/* FEATURED INITIATIVES */}
+        <AnimatedSection ref={featuredRef} visible={featuredVisible}>
+          <SectionBox>
+            <SectionTitle>Featured Initiatives</SectionTitle>
+            <SectionSubtitle>
+              Explore our diverse programs making a real impact in Chennai.
+            </SectionSubtitle>
+            <CardGrid>
+              <Card>
+                <CardIcon>🏖</CardIcon>
+                <h3>Beach Cleanups</h3>
+                <p>
+                  Monthly cleanups at Marina, Elliot, and Besant Nagar beaches. Over <strong>200 km</strong> of shoreline cleared last year.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>🌱</CardIcon>
+                <h3>Urban Afforestation</h3>
+                <p>
+                  Planting <strong>500+ saplings</strong> annually to combat pollution and rising temperatures.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>📚</CardIcon>
+                <h3>Education Outreach</h3>
+                <p>
+                  Tutoring and mentorship programs impacting <strong>3,000+</strong> students each year.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>💉</CardIcon>
+                <h3>Health Camps</h3>
+                <p>
+                  Free medical camps with <strong>100+ doctors</strong> benefiting over <strong>5,000</strong> individuals.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>🤝</CardIcon>
+                <h3>Community Empowerment</h3>
+                <p>
+                  Skill development and elderly care workshops, with more than <strong>150</strong> sessions held annually.
+                </p>
+              </Card>
+            </CardGrid>
+          </SectionBox>
+        </AnimatedSection>
+        
+        {/* STATISTICS SECTION */}
+        <AnimatedSection ref={statsRef} visible={statsVisible}>
+          <SectionBox>
+            <SectionTitle>Our Impact in Numbers</SectionTitle>
+            <CardGrid>
+              <Card>
+                <h3><Highlight>15K+</Highlight></h3>
+                <p>Active Volunteers</p>
+              </Card>
+              <Card>
+                <h3><Highlight>120+</Highlight></h3>
+                <p>Initiatives Launched</p>
+              </Card>
+              <Card>
+                <h3><Highlight>500+</Highlight></h3>
+                <p>Events Organized</p>
+              </Card>
+              <Card>
+                <h3><Highlight>60+</Highlight></h3>
+                <p>NGO Partnerships</p>
+              </Card>
+            </CardGrid>
+          </SectionBox>
+        </AnimatedSection>
+        
+        {/* RECENT EVENTS SECTION */}
+        <AnimatedSection ref={eventsRef} visible={eventsVisible}>
+          <SectionBox>
+            <SectionTitle>Recent Volunteering Events</SectionTitle>
+            <SectionSubtitle>
+              Catch up with our latest events making a difference across Chennai.
+            </SectionSubtitle>
+            <CardGrid>
+              <Card>
+                <h3>Marina Beach Cleanup</h3>
+                <p>
+                  <strong>Date:</strong> Feb 20, 2025<br/>
+                  <strong>Impact:</strong> 250 volunteers, 3 km beach cleared.
+                </p>
+                <Link to="/events/beach-cleanup">View Details</Link>
+              </Card>
+              <Card>
+                <h3>Urban Tree Plantation</h3>
+                <p>
+                  <strong>Date:</strong> Jan 15, 2025<br/>
+                  <strong>Impact:</strong> 800 saplings planted across 5 localities.
+                </p>
+                <Link to="/events/tree-plantation">View Details</Link>
+              </Card>
+              <Card>
+                <h3>Community Health Camp</h3>
+                <p>
+                  <strong>Date:</strong> Dec 05, 2024<br/>
+                  <strong>Impact:</strong> 500+ beneficiaries received free check-ups.
+                </p>
+                <Link to="/events/health-camp">View Details</Link>
+              </Card>
+            </CardGrid>
+          </SectionBox>
+        </AnimatedSection>
+        
+        {/* COMMUNITY & SOCIAL INITIATIVES SECTION */}
+        <AnimatedSection ref={communityRef} visible={communityVisible}>
+          <SectionBox>
+            <SectionTitle>Community & Social Initiatives</SectionTitle>
+            <SectionSubtitle>
+              Our projects also focus on social welfare, from donation drives to skill training sessions.
+            </SectionSubtitle>
+            <CardGrid>
+              <Card>
+                <CardIcon>🧥</CardIcon>
+                <h3>Clothes Donation Drive</h3>
+                <p>
+                  Collected and distributed over <strong>5 tons</strong> of clothes to underprivileged families.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>🍲</CardIcon>
+                <h3>Food Distribution</h3>
+                <p>
+                  Organized weekly food drives serving over <strong>2,000 meals</strong> to those in need.
+                </p>
+              </Card>
+              <Card>
+                <CardIcon>🏠</CardIcon>
+                <h3>Housing Support</h3>
+                <p>
+                  Partnered with local agencies to provide temporary shelters for <strong>300+ homeless</strong> individuals.
+                </p>
+              </Card>
+            </CardGrid>
+          </SectionBox>
+        </AnimatedSection>
+      </InitiativesContainer>
+    </>
+  );
+}
