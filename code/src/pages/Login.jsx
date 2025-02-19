@@ -34,7 +34,9 @@ const useScrollAnimation = () => {
       { threshold: 0.1 }
     );
     if (currentRef) observer.observe(currentRef);
-    return () => { if (currentRef) observer.unobserve(currentRef); };
+    return () => {
+      if (currentRef) observer.unobserve(currentRef);
+    };
   }, []);
   return [ref, isVisible];
 };
@@ -62,86 +64,157 @@ const swirl = keyframes`
 /* ========================
    4. Styled Components
    ======================== */
-
-/* Layout Wrappers */
 const PageWrapper = styled.div`
-  display: flex; flex-direction: column; min-height: 100vh;
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh;
 `;
 const MainContent = styled.div`
-  flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-top: 2rem;
+  flex-grow: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding-top: 2rem;
 `;
 
 /* Animated Background */
 const BackgroundShapesContainer = styled.div`
-  position: absolute; top: 0; left: 0;
+  position: absolute; 
+  top: 0; left: 0;
   width: 100%; height: 100%;
-  pointer-events: none; overflow: hidden; z-index: 0;
+  pointer-events: none; 
+  overflow: hidden; 
+  z-index: 0;
 `;
 const Shape = styled.div`
-  position: absolute; border-radius: 50%; opacity: 0.15;
+  position: absolute; 
+  border-radius: 50%; 
+  opacity: 0.15;
 `;
 const Circle1 = styled(Shape)`
-  width: 160px; height: 160px; top: -40px; left: -60px; background: #fa92b2; animation: ${float} 7s ease-in-out infinite;
+  width: 160px; height: 160px; 
+  top: -40px; left: -60px; 
+  background: #fa92b2; 
+  animation: ${float} 7s ease-in-out infinite;
 `;
 const Circle2 = styled(Shape)`
-  width: 100px; height: 100px; top: 30%; right: 5%; background: #9b82f3; animation: ${spin} 12s linear infinite;
+  width: 100px; height: 100px; 
+  top: 30%; right: 5%; 
+  background: #9b82f3; 
+  animation: ${spin} 12s linear infinite;
 `;
 const Circle3 = styled(Shape)`
-  width: 180px; height: 180px; top: 55%; left: 10%; background: #f9cf61; animation: ${float} 8s ease-in-out infinite;
+  width: 180px; height: 180px; 
+  top: 55%; left: 10%; 
+  background: #f9cf61; 
+  animation: ${float} 8s ease-in-out infinite;
 `;
 const Circle4 = styled(Shape)`
-  width: 220px; height: 220px; top: 20%; left: 40%; background: #52c7ee; animation: ${swirl} 10s linear infinite;
+  width: 220px; height: 220px; 
+  top: 20%; left: 40%; 
+  background: #52c7ee; 
+  animation: ${swirl} 10s linear infinite;
 `;
 const Circle5 = styled(Shape)`
-  width: 140px; height: 140px; top: 70%; right: 20%; background: #fc8366; animation: ${spin} 14s linear infinite;
+  width: 140px; height: 140px; 
+  top: 70%; right: 20%; 
+  background: #fc8366; 
+  animation: ${spin} 14s linear infinite;
 `;
 const Circle6 = styled(Shape)`
-  width: 120px; height: 120px; top: 80%; left: 5%; background: #d389fc; animation: ${float} 9s ease-in-out infinite;
+  width: 120px; height: 120px; 
+  top: 80%; left: 5%; 
+  background: #d389fc; 
+  animation: ${float} 9s ease-in-out infinite;
 `;
 const Circle7 = styled(Shape)`
-  width: 100px; height: 100px; top: 10%; right: 25%; background: #8efcc1; animation: ${swirl} 6s linear infinite;
+  width: 100px; height: 100px; 
+  top: 10%; right: 25%; 
+  background: #8efcc1; 
+  animation: ${swirl} 6s linear infinite;
 `;
 const Circle8 = styled(Shape)`
-  width: 150px; height: 150px; bottom: -50px; left: 20%; background: #8093fc; animation: ${spin} 15s linear infinite;
+  width: 150px; height: 150px; 
+  bottom: -50px; left: 20%; 
+  background: #8093fc; 
+  animation: ${spin} 15s linear infinite;
 `;
 const Circle9 = styled(Shape)`
-  width: 200px; height: 200px; top: 40%; left: -60px; background: #ffb7df; animation: ${float} 8s ease-in-out infinite;
+  width: 200px; height: 200px; 
+  top: 40%; left: -60px; 
+  background: #ffb7df; 
+  animation: ${float} 8s ease-in-out infinite;
 `;
 const Circle10 = styled(Shape)`
-  width: 100px; height: 100px; bottom: 0; right: 0; background: #fcaf3e; animation: ${swirl} 9s linear infinite;
+  width: 100px; height: 100px; 
+  bottom: 0; right: 0; 
+  background: #fcaf3e; 
+  animation: ${swirl} 9s linear infinite;
 `;
 const Circle11 = styled(Shape)`
-  width: 170px; height: 170px; top: 15%; right: 10%; background: #fcdf66; animation: ${float} 7.5s ease-in-out infinite;
+  width: 170px; height: 170px; 
+  top: 15%; right: 10%; 
+  background: #fcdf66; 
+  animation: ${float} 7.5s ease-in-out infinite;
 `;
 const Circle12 = styled(Shape)`
-  width: 90px; height: 90px; bottom: 15%; left: 25%; background: #d3fc66; animation: ${spin} 15s linear infinite;
+  width: 90px; height: 90px; 
+  bottom: 15%; left: 25%; 
+  background: #d3fc66; 
+  animation: ${spin} 15s linear infinite;
 `;
 const Circle13 = styled(Shape)`
-  width: 130px; height: 130px; top: 75%; left: 65%; background: #66fc8f; animation: ${float} 10s ease-in-out infinite;
+  width: 130px; height: 130px; 
+  top: 75%; left: 65%; 
+  background: #66fc8f; 
+  animation: ${float} 10s ease-in-out infinite;
 `;
 const Circle14 = styled(Shape)`
-  width: 190px; height: 190px; top: 85%; right: 0; background: #66fcf2; animation: ${swirl} 11s linear infinite;
+  width: 190px; height: 190px; 
+  top: 85%; right: 0; 
+  background: #66fcf2; 
+  animation: ${swirl} 11s linear infinite;
 `;
 const Circle15 = styled(Shape)`
-  width: 80px; height: 80px; top: 25%; right: 40%; background: #857df5; animation: ${spin} 9s linear infinite;
+  width: 80px; height: 80px; 
+  top: 25%; right: 40%; 
+  background: #857df5; 
+  animation: ${spin} 9s linear infinite;
 `;
 const Circle16 = styled(Shape)`
-  width: 110px; height: 110px; bottom: 25%; left: 45%; background: #f57d93; animation: ${float} 8s ease-in-out infinite;
+  width: 110px; height: 110px; 
+  bottom: 25%; left: 45%; 
+  background: #f57d93; 
+  animation: ${float} 8s ease-in-out infinite;
 `;
 const Circle17 = styled(Shape)`
-  width: 90px; height: 90px; top: 5%; left: 45%; background: #7df5aa; animation: ${swirl} 12s linear infinite;
+  width: 90px; height: 90px; 
+  top: 5%; left: 45%; 
+  background: #7df5aa; 
+  animation: ${swirl} 12s linear infinite;
 `;
 const Circle18 = styled(Shape)`
-  width: 150px; height: 150px; bottom: 20%; right: 10%; background: #f5b27d; animation: ${spin} 12s linear infinite;
+  width: 150px; height: 150px; 
+  bottom: 20%; right: 10%; 
+  background: #f5b27d; 
+  animation: ${spin} 12s linear infinite;
 `;
 const Circle19 = styled(Shape)`
-  width: 100px; height: 100px; top: 60%; right: 40%; background: #7df5f5; animation: ${float} 8s ease-in-out infinite;
+  width: 100px; height: 100px; 
+  top: 60%; right: 40%; 
+  background: #7df5f5; 
+  animation: ${float} 8s ease-in-out infinite;
 `;
 const Circle20 = styled(Shape)`
-  width: 220px; height: 220px; bottom: 10px; left: -80px; background: #66ecfc; animation: ${swirl} 14s linear infinite;
+  width: 220px; height: 220px; 
+  bottom: 10px; left: -80px; 
+  background: #66ecfc; 
+  animation: ${swirl} 14s linear infinite;
 `;
 
-/* Form Container & Toggle Styles */
+/* ========================
+   Form Container & Toggle Styles
+   ======================== */
 const LoginContainer = styled.div`
   width: 40%;
   min-width: 600px;
@@ -222,7 +295,7 @@ const Button = styled.button`
 `;
 
 /* ========================
-   5. Component Definition
+   Component Definition
    ======================== */
 export default function Login() {
   const navigate = useNavigate();
@@ -243,7 +316,6 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // Send login credentials to backend
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -251,15 +323,19 @@ export default function Login() {
       });
       const data = await response.json();
       if (response.ok) {
-        // Store token in localStorage
+        // Store token & userType in localStorage for navbar updates
         localStorage.setItem("token", data.token);
-        // Redirect based on returned userType
+        localStorage.setItem("userType", data.userType);
+        // Dispatch a custom event to notify other components (like Navbar) of auth change
+        window.dispatchEvent(new Event("authChange"));
+        
         if (data.userType === "volunteer") {
           navigate("/volunteer-dashboard");
         } else {
           navigate("/host-dashboard");
         }
-      } else {
+      }
+       else {
         alert(`Login failed: ${data.error || "Unknown error"}`);
       }
     } catch (error) {
