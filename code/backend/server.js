@@ -1,8 +1,9 @@
+// server.js
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import authRoutes from "./routes/authRoutes.js";
-import connectDB from "./config/db.js";
+import { connectDB } from "./config/db.js"; // Notice the curly braces
 
 dotenv.config();
 const app = express();

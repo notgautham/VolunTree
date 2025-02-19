@@ -1,5 +1,5 @@
 import { Routes, Route } from "react-router-dom";
-import ProtectedRoute from "./components/ProtectedRoute";  // Ensure this file exists!
+import ProtectedRoute from "./components/ProtectedRoute.jsx";  // Ensure this file exists!
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
