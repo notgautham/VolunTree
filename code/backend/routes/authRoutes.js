@@ -35,7 +35,30 @@ router.post("/signup", async (req, res) => {
 
 // User Login
 router.post("/login", async (req, res) => {
-  // ...
+  const { email, password } = req.body;
+  try {
+    const userResult = await pool.query(
+      `SELECT id, email, password, 'volunteer' as userType 
+       FROM volunteers WHERE email = $1
+       UNION
+       SELECT id, email, password, 'host' as userType 
+       FROM hosts WHERE email = $1`,
+      [email]
+    );
+    if (userResult.rows.length === 0)
+      return res.status(401).json({ message: "User not found" });
+    const user = userResult.rows[0];
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword)
+      return res.status(401).json({ message: "Invalid credentials" });
+    const token = jwt.sign({ id: user.id, userType: user.usertype }, process.env.JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.json({ token, userType: user.usertype });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
+
 
 export default router;
