@@ -24,18 +24,27 @@ const Logo = styled(Link)`
   text-decoration: none;
 `;
 
+/* Container for the links; its layout is fixed */
 const MainLinksContainer = styled.div`
   flex: 1;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  margin-left: 2rem;
+  /* When authenticated, we want space between left (public links) and right (auth links);
+     when not, we simply center the public links */
+  justify-content: ${(props) => (props.authenticated ? "space-between" : "center")};
+  margin-left: ${(props) => (props.authenticated ? "2rem" : "0")};
 `;
 
 const PublicLinks = styled.div`
   display: flex;
   gap: 1.5rem;
-  
+  align-items: center;
+  /* If not authenticated, center these links */
+  ${(props) =>
+    !props.authenticated &&
+    `
+      margin: 0 auto;
+    `}
   a {
     text-decoration: none;
     color: #333;
@@ -43,7 +52,6 @@ const PublicLinks = styled.div`
     transition: color 0.3s ease;
     font-size: 1rem;
     padding: 0.5rem 1rem;
-  
     &:hover {
       color: #1e40af;
     }
@@ -59,7 +67,6 @@ const AuthLinks = styled.div`
 const AuthButtons = styled.div`
   display: flex;
   gap: 1rem;
-  
   a {
     padding: 0.6rem 1.4rem;
     border-radius: 25px;
@@ -67,20 +74,16 @@ const AuthButtons = styled.div`
     font-weight: bold;
     font-size: 1rem;
   }
-  
   .login {
     background-color: #1e40af;
     color: white;
-  
     &:hover {
       background-color: #15317e;
     }
   }
-  
   .signup {
     border: 2px solid #1e40af;
     color: #1e40af;
-  
     &:hover {
       background-color: #1e40af;
       color: white;
@@ -97,7 +100,6 @@ const LogoutButton = styled.button`
   font-size: 1rem;
   border: none;
   cursor: pointer;
-  
   &:hover {
     background-color: #c62828;
   }
@@ -108,7 +110,7 @@ const Navbar = () => {
   const [userType, setUserType] = useState(null);
   const navigate = useNavigate();
 
-  // Check auth state on mount and when "authChange" is dispatched
+  // Check auth state on mount and listen for auth changes
   useEffect(() => {
     const checkAuth = () => {
       const token = localStorage.getItem("token");
@@ -118,7 +120,6 @@ const Navbar = () => {
     };
 
     checkAuth();
-
     window.addEventListener("authChange", checkAuth);
     return () => window.removeEventListener("authChange", checkAuth);
   }, []);
@@ -129,24 +130,20 @@ const Navbar = () => {
     setIsAuthenticated(false);
     setUserType(null);
     navigate("/");
-    // Optionally, you could dispatch another event if needed:
     window.dispatchEvent(new Event("authChange"));
   };
 
   return (
     <NavbarContainer>
       <Logo to="/">VolunTree</Logo>
-      <MainLinksContainer>
-        {/* Left half: Public Links */}
-        <PublicLinks>
+      <MainLinksContainer authenticated={isAuthenticated}>
+        <PublicLinks authenticated={isAuthenticated}>
           <Link to="/">Home</Link>
           <Link to="/about">About Us</Link>
           <Link to="/initiatives">Initiatives</Link>
           <Link to="/donate">Donate</Link>
           <Link to="/contact">Contact Us</Link>
         </PublicLinks>
-
-        {/* Right half: Authenticated Links or Login/Signup */}
         {isAuthenticated ? (
           <AuthLinks>
             {userType === "volunteer" ? (

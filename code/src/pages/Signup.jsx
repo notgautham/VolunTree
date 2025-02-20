@@ -48,58 +48,152 @@ const float = keyframes`
 /* ========================
    4. Styled Components
    ======================== */
-const PageWrapper = styled.div` display: flex; flex-direction: column; min-height: 100vh; `;
-const MainContent = styled.div` flex-grow: 1; display: flex; align-items: center; justify-content: center; padding-top: 2rem; `;
+const PageWrapper = styled.div` 
+  display: flex; 
+  flex-direction: column; 
+  min-height: 100vh; 
+`;
+const MainContent = styled.div` 
+  flex-grow: 1; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding-top: 2rem; 
+`;
 const SignupContainer = styled.div`
-  width: 40%; min-width: 600px; max-width: 900px;
-  margin: 6rem auto 0; padding: 4rem; background-color: #ffffff;
-  border-radius: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); text-align: center;
-  position: relative; z-index: 1; transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 40%; 
+  min-width: 600px; 
+  max-width: 900px;
+  margin: 6rem auto 0; 
+  padding: 4rem; 
+  background-color: #ffffff;
+  border-radius: 8px; 
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12); 
+  text-align: center;
+  position: relative; 
+  z-index: 1; 
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
   margin-bottom: 3rem;
-  &:hover { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.15); }
+  &:hover { 
+    transform: translateY(-3px); 
+    box-shadow: 0 10px 28px rgba(0,0,0,0.15); 
+  }
 `;
 const ToggleContainer = styled.div`
-  display: flex; width: 100%; max-width: 400px; margin: 0 auto 1.5rem;
-  background-color: #f1f1f1; border-radius: 50px; position: relative; overflow: hidden;
+  display: flex; 
+  width: 100%; 
+  max-width: 400px; 
+  margin: 0 auto 1.5rem;
+  background-color: #f1f1f1; 
+  border-radius: 50px; 
+  position: relative; 
+  overflow: hidden;
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 const ToggleIndicator = styled.div`
-  position: absolute; top: 0;
+  position: absolute; 
+  top: 0;
   left: ${(props) => (props.active === "Volunteer" ? "0%" : "50%")};
-  width: 50%; height: 100%; background-color: #f9cf61;
-  border-radius: 50px; transition: left 0.3s ease; z-index: 0;
+  width: 50%; 
+  height: 100%; 
+  background-color: #f9cf61;
+  border-radius: 50px; 
+  transition: left 0.3s ease; 
+  z-index: 0;
 `;
 const ToggleButton = styled.button`
-  flex: 1; padding: 0.75rem 1rem; border: none; background: transparent;
-  font-size: 1rem; font-weight: 600; cursor: pointer; z-index: 1;
+  flex: 1; 
+  padding: 0.75rem 1rem; 
+  border: none; 
+  background: transparent;
+  font-size: 1rem; 
+  font-weight: 600; 
+  cursor: pointer; 
+  z-index: 1;
   color: ${(props) => (props.$active ? "#2d3142" : "#777")};
 `;
-const Title = styled.h2` font-size: 1.8rem; color: #1e40af; margin-bottom: 1rem; `;
-const Form = styled.form` display: flex; flex-direction: column; gap: 1rem; `;
+const Title = styled.h2`
+  font-size: 1.8rem; 
+  color: #1e40af; 
+  margin-bottom: 1rem;
+`;
+const Form = styled.form`
+  display: flex; 
+  flex-direction: column; 
+  gap: 1rem;
+`;
 const Input = styled.input`
-  padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; width: 100%;
-  transition: border-color 0.3s ease; &:focus { outline: none; border-color: #f9cf61; }
+  padding: 0.8rem; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  font-size: 1rem; 
+  width: 100%;
+  transition: border-color 0.3s ease; 
+  &:focus { 
+    outline: none; 
+    border-color: #f9cf61; 
+  }
 `;
 const TextArea = styled.textarea`
-  padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; width: 100%;
-  resize: vertical; min-height: 100px; transition: border-color 0.3s ease; &:focus { outline: none; border-color: #f9cf61; }
+  padding: 0.8rem; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  font-size: 1rem; 
+  width: 100%;
+  resize: vertical; 
+  min-height: 100px; 
+  transition: border-color 0.3s ease; 
+  &:focus { 
+    outline: none; 
+    border-color: #f9cf61; 
+  }
 `;
 const Select = styled.select`
-  padding: 0.8rem; border: 1px solid #ccc; border-radius: 5px; font-size: 1rem; width: 100%;
-  transition: border-color 0.3s ease; &:focus { outline: none; border-color: #f9cf61; }
+  padding: 0.8rem; 
+  border: 1px solid #ccc; 
+  border-radius: 5px; 
+  font-size: 1rem; 
+  width: 100%;
+  transition: border-color 0.3s ease; 
+  &:focus { 
+    outline: none; 
+    border-color: #f9cf61; 
+  }
 `;
 const Button = styled.button`
-  padding: 0.8rem; border: none; border-radius: 5px; background-color: #1e40af;
-  color: white; font-size: 1rem; cursor: pointer; transition: background 0.3s ease, box-shadow 0.3s ease;
-  &:hover { background-color: #15317e; }
+  padding: 0.8rem; 
+  border: none; 
+  border-radius: 5px; 
+  background-color: #1e40af;
+  color: white; 
+  font-size: 1rem; 
+  cursor: pointer; 
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+  &:hover { 
+    background-color: #15317e; 
+  }
 `;
 const BackgroundShapesContainer = styled.div`
-  position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-  pointer-events: none; overflow: hidden; z-index: 0;
+  position: absolute; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%;
+  pointer-events: none; 
+  overflow: hidden; 
+  z-index: 0;
 `;
-const Shape = styled.div` position: absolute; border-radius: 50%; opacity: 0.15; `;
+const Shape = styled.div`
+  position: absolute; 
+  border-radius: 50%; 
+  opacity: 0.15;
+`;
 const Circle1 = styled(Shape)`
-  width: 160px; height: 160px; top: -40px; left: -60px; background: #fa92b2;
+  width: 160px; 
+  height: 160px; 
+  top: -40px; 
+  left: -60px; 
+  background: #fa92b2;
   animation: ${float} 7s ease-in-out infinite;
 `;
 
@@ -124,13 +218,47 @@ export default function Signup() {
     userType: "volunteer",
   });
 
+  // State to store email existence info
+  const [emailExists, setEmailExists] = useState({ exists: false, roles: [] });
+
+  // Check email existence via the new API endpoint
+  const checkEmailExistence = async (email) => {
+    if (!email) {
+      setEmailExists({ exists: false, roles: [] });
+      return;
+    }
+    try {
+      const response = await fetch("/api/auth/check-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+      const data = await response.json();
+      setEmailExists(data);
+    } catch (error) {
+      console.error("Error checking email:", error);
+    }
+  };
+
+  // Use a dedicated handler for email changes
+  const handleEmailChange = (e) => {
+    const email = e.target.value;
+    setFormData({ ...formData, email });
+    checkEmailExistence(email);
+  };
+
   const handleToggle = (type) => {
     setToggle(type);
     setFormData({ ...formData, userType: type.toLowerCase() });
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    // For email, use the dedicated handler
+    if (e.target.name === "email") {
+      handleEmailChange(e);
+    } else {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -163,7 +291,6 @@ export default function Signup() {
     }
 
     try {
-      // Using a relative URL so the Vite proxy routes to the backend at localhost:5000
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -215,6 +342,17 @@ export default function Signup() {
                 <>
                   <Input type="text" name="fullName" placeholder="Full Name" required onChange={handleChange} />
                   <Input type="email" name="email" placeholder="Email Address" required onChange={handleChange} />
+                  {/* Display message if email exists */}
+                  {emailExists.exists && emailExists.roles.includes(formData.userType) && (
+                    <p style={{ color: "red", fontSize: "0.9rem" }}>
+                      This email is already registered as a {formData.userType}. Try logging in.
+                    </p>
+                  )}
+                  {emailExists.exists && !emailExists.roles.includes(formData.userType) && (
+                    <p style={{ color: "green", fontSize: "0.9rem" }}>
+                      This email is registered under another role. You can proceed with this signup.
+                    </p>
+                  )}
                   <Input type="password" name="password" placeholder="Password" required onChange={handleChange} />
                   <Input type="tel" name="contactNumber" placeholder="Contact Number" required onChange={handleChange} />
                   <Input type="text" name="address" placeholder="Residential Address" required onChange={handleChange} />
@@ -230,6 +368,17 @@ export default function Signup() {
                   <Input type="text" name="organizationName" placeholder="Organization/Company Name" required onChange={handleChange} />
                   <Input type="text" name="contactPerson" placeholder="Contact Person Name" required onChange={handleChange} />
                   <Input type="email" name="email" placeholder="Email Address" required onChange={handleChange} />
+                  {/* Display message if email exists */}
+                  {emailExists.exists && emailExists.roles.includes(formData.userType) && (
+                    <p style={{ color: "red", fontSize: "0.9rem" }}>
+                      This email is already registered as a {formData.userType}. Try logging in.
+                    </p>
+                  )}
+                  {emailExists.exists && !emailExists.roles.includes(formData.userType) && (
+                    <p style={{ color: "green", fontSize: "0.9rem" }}>
+                      This email is registered under another role. You can proceed with this signup.
+                    </p>
+                  )}
                   <Input type="password" name="password" placeholder="Password" required onChange={handleChange} />
                   <Input type="tel" name="contactNumber" placeholder="Contact Number" required onChange={handleChange} />
                   <Input type="text" name="address" placeholder="Organization Address" required onChange={handleChange} />

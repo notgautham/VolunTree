@@ -33,32 +33,67 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// User Login
+// User Login - Now using userType to query only the correct table
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, userType } = req.body;
+  
+  if (!userType) {
+    return res.status(400).json({ message: "User type not provided" });
+  }
+  
+  // Select the correct table based on userType
+  const table = userType === "volunteer" ? "volunteers" : "hosts";
+
   try {
     const userResult = await pool.query(
-      `SELECT id, email, password, 'volunteer' as userType 
-       FROM volunteers WHERE email = $1
-       UNION
-       SELECT id, email, password, 'host' as userType 
-       FROM hosts WHERE email = $1`,
+      `SELECT id, email, password FROM ${table} WHERE email = $1`,
       [email]
     );
-    if (userResult.rows.length === 0)
+    
+    if (userResult.rows.length === 0) {
       return res.status(401).json({ message: "User not found" });
+    }
+    
     const user = userResult.rows[0];
     const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword)
+    
+    if (!isValidPassword) {
       return res.status(401).json({ message: "Invalid credentials" });
-    const token = jwt.sign({ id: user.id, userType: user.usertype }, process.env.JWT_SECRET, {
+    }
+    
+    const token = jwt.sign({ id: user.id, userType }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-    res.json({ token, userType: user.usertype });
+    res.json({ token, userType });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
 });
 
+// Check Email Endpoint (unchanged)
+router.post("/check-email", async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const volunteerResult = await pool.query("SELECT email FROM volunteers WHERE email = $1", [email]);
+    const hostResult = await pool.query("SELECT email FROM hosts WHERE email = $1", [email]);
+
+    const volunteerExists = volunteerResult.rows.length > 0;
+    const hostExists = hostResult.rows.length > 0;
+
+    if (volunteerExists && hostExists) {
+      return res.json({ exists: true, roles: ["volunteer", "host"] });
+    } else if (volunteerExists) {
+      return res.json({ exists: true, roles: ["volunteer"] });
+    } else if (hostExists) {
+      return res.json({ exists: true, roles: ["host"] });
+    } else {
+      return res.json({ exists: false });
+    }
+  } catch (error) {
+    console.error("Error checking email existence:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 export default router;
