@@ -33,7 +33,7 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-// User Login - Now using userType to query only the correct table
+// User Login – Updated to use userType from request
 router.post("/login", async (req, res) => {
   const { email, password, userType } = req.body;
   
@@ -41,7 +41,7 @@ router.post("/login", async (req, res) => {
     return res.status(400).json({ message: "User type not provided" });
   }
   
-  // Select the correct table based on userType
+  // Determine which table to query based on userType
   const table = userType === "volunteer" ? "volunteers" : "hosts";
 
   try {
@@ -50,17 +50,15 @@ router.post("/login", async (req, res) => {
       [email]
     );
     
-    if (userResult.rows.length === 0) {
+    if (userResult.rows.length === 0)
       return res.status(401).json({ message: "User not found" });
-    }
-    
+      
     const user = userResult.rows[0];
     const isValidPassword = await bcrypt.compare(password, user.password);
     
-    if (!isValidPassword) {
+    if (!isValidPassword)
       return res.status(401).json({ message: "Invalid credentials" });
-    }
-    
+      
     const token = jwt.sign({ id: user.id, userType }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
@@ -70,7 +68,7 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Check Email Endpoint (unchanged)
+// Check Email Endpoint
 router.post("/check-email", async (req, res) => {
   const { email } = req.body;
 
