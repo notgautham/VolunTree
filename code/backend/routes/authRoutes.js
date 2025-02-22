@@ -162,3 +162,61 @@ router.put("/volunteer/profile/update", verifyToken, async (req, res) => {
 });
 
 export default router;
+
+// Get host profile
+router.get("/host/profile", verifyToken, async (req, res) => {
+  // Ensure only hosts can access this endpoint
+  if (req.user.userType !== "host") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT id, organization_name, contact_person, email, contact_number, address, website_url, description FROM hosts WHERE id = $1",
+      [req.user.id]
+    );
+    if (result.rows.length === 0)
+      return res.status(404).json({ message: "Profile not found" });
+    res.json(result.rows[0]);  // Make sure this is sending the correct profile data
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// Update host profile
+router.put("/host/profile/update", verifyToken, async (req, res) => {
+  if (req.user.userType !== "host") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { organizationName, contactPerson, contactNumber, address, websiteUrl, description } = req.body;
+  console.log("Received data for update:", req.body); // Log the incoming data
+
+  try {
+    const result = await pool.query(
+      `UPDATE hosts
+       SET organization_name = $1,
+           contact_person = $2,
+           contact_number = $3,
+           address = $4,
+           website_url = $5,
+           description = $6
+       WHERE id = $7`,
+      [organizationName, contactPerson, contactNumber, address, websiteUrl, description, req.user.id]
+    );
+
+    if (result.rowCount === 0) {
+      console.error("No rows updated. Please check the data.");  // If no rows are updated
+      return res.status(400).json({ message: "No changes detected or profile not found" });
+    }
+
+    console.log("Profile updated successfully.");
+    res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    console.error("Error during profile update:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
