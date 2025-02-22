@@ -5,6 +5,10 @@ import pool from "../config/db.js";
 
 const router = express.Router();
 
+// -----------------------
+// Authentication Endpoints
+// -----------------------
+
 // User Signup
 router.post("/signup", async (req, res) => {
   const { fullName, email, password, contactNumber, address, age, gender, userType, contactPerson, websiteUrl, description } = req.body;
@@ -90,6 +94,69 @@ router.post("/check-email", async (req, res) => {
     }
   } catch (error) {
     console.error("Error checking email existence:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// -----------------------
+// Volunteer Profile Endpoints
+// -----------------------
+
+// Middleware to verify token
+const verifyToken = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1];
+  if (!token) return res.status(401).json({ message: "Unauthorized" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Expecting { id, userType }
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid token" });
+  }
+};
+
+// Get volunteer profile
+router.get("/volunteer/profile", verifyToken, async (req, res) => {
+  // Ensure only volunteers access this endpoint
+  if (req.user.userType !== "volunteer") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  try {
+    const result = await pool.query(
+      "SELECT id, full_name, email, contact_number, address, age, gender FROM volunteers WHERE id = $1",
+      [req.user.id]
+    );
+    if (result.rows.length === 0)
+      return res.status(404).json({ message: "Profile not found" });
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error fetching profile:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+// Update volunteer profile
+router.put("/volunteer/profile/update", verifyToken, async (req, res) => {
+  if (req.user.userType !== "volunteer") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { fullName, contactNumber, address, age, gender } = req.body;
+  try {
+    await pool.query(
+      `UPDATE volunteers
+       SET full_name = $1,
+           contact_number = $2,
+           address = $3,
+           age = $4,
+           gender = $5
+       WHERE id = $6`,
+      [fullName, contactNumber, address, age, gender, req.user.id]
+    );
+    res.json({ message: "Profile updated successfully" });
+  } catch (error) {
+    console.error("Error updating profile:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
