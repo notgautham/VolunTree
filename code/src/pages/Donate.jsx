@@ -5,7 +5,7 @@ import ImageCarousel from "../components/ImageCarousel"; // Remove if not used
 
 /* =======================
    1. Global Style
-   ======================== */
+   ======================= */
 const GlobalStyle = createGlobalStyle`
   /* Basic reset */
   * {
