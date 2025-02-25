@@ -109,4 +109,22 @@ router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
     }
 });
 
+// 🔹 GET host opportunities
+router.get("/host-opportunities", verifyToken, async (req, res) => {
+    if (req.user.userType !== "host") {
+        return res.status(403).json({ message: "Access denied" });
+    }
+    try {
+        const result = await pool.query(
+            "SELECT * FROM opportunities WHERE host_id = $1 ORDER BY date DESC",
+            [req.user.id]
+        );
+        res.json(result.rows);
+    } catch (error) {
+        console.error("Error fetching host opportunities:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+});
+
+
 export default router;
