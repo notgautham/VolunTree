@@ -316,14 +316,37 @@ export default function CreateOpportunity() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Combine startDate and startTime into a single ISO datetime string
+    const date = opportunity.startDate && opportunity.startTime 
+      ? `${opportunity.startDate}T${opportunity.startTime}` 
+      : "";
+    
+    // Pack additional details into a requirements object
+    const requirements = {
+      endDate: opportunity.endDate,
+      endTime: opportunity.endTime,
+      volunteersRequired: opportunity.volunteersRequired,
+      minAge: opportunity.minAge,
+      maxAge: opportunity.maxAge,
+      genderPreference: opportunity.genderPreference,
+      workHours: opportunity.workHours,
+    };
+
     try {
-      const response = await fetch("/api/host/create-opportunity", {
+      const response = await fetch("http://localhost:5000/api/opportunities/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-        body: JSON.stringify(opportunity),
+        body: JSON.stringify({
+          title: opportunity.title,
+          description: opportunity.description,
+          location: opportunity.location,
+          date: date,
+          requirements: requirements,
+        }),
       });
 
       if (!response.ok) throw new Error("Failed to create opportunity");
@@ -482,7 +505,7 @@ export default function CreateOpportunity() {
                 <option value="female">Female</option>
               </Select>
 
-              <Label>Work Hours(per day):</Label>
+              <Label>Work Hours (per day):</Label>
               <Input
                 type="number"
                 name="workHours"
@@ -499,5 +522,3 @@ export default function CreateOpportunity() {
     </>
   );
 }
-
-
