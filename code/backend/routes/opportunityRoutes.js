@@ -109,22 +109,30 @@ router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
   }
 });
 
-// 🔹 GET host opportunities
+
+// 🔹 GET host opportunities (updated with volunteer_count)
 router.get("/host-opportunities", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
     return res.status(403).json({ message: "Access denied" });
   }
   try {
-    const result = await pool.query(
-      "SELECT * FROM opportunities WHERE host_id = $1 ORDER BY date DESC",
-      [req.user.id]
-    );
+    const query = `
+      SELECT o.*, COALESCE(COUNT(vs.volunteer_id), 0) AS volunteer_count
+      FROM opportunities o
+      LEFT JOIN volunteer_signups vs ON o.id = vs.opportunity_id
+      WHERE o.host_id = $1
+      GROUP BY o.id
+      ORDER BY o.date DESC
+    `;
+    const result = await pool.query(query, [req.user.id]);
     res.json(result.rows);
   } catch (error) {
     console.error("Error fetching host opportunities:", error);
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
+
 
 // 🔹 GET endpoint for volunteer opportunities (updated)
 router.get("/volunteer", verifyToken, async (req, res) => {
