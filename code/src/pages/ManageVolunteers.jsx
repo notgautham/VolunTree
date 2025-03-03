@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 /* ========================
-   Page Wrapper and Content for Footer Positioning
+   Page Wrapper and Content
    ======================== */
 const PageWrapper = styled.div`
   display: flex;
@@ -34,6 +34,11 @@ const PageWrapper = styled.div`
 `;
 const Content = styled.div`
   flex: 1;
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 2rem auto;
+  position: relative;
+  z-index: 1;
 `;
 
 /* ========================
@@ -55,6 +60,7 @@ const swirl = keyframes`
   75% { transform: rotate(270deg) translate(10px, -10px); }
   100% { transform: rotate(360deg) translate(0px, 0px); }
 `;
+
 const BackgroundShapesContainer = styled.div`
   position: fixed;
   top: 0;
@@ -223,6 +229,52 @@ const DisabledButton = styled.button`
 `;
 
 /* ========================
+   Styled Table Components for Volunteer Management
+   ======================== */
+const Table = styled.table`
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+`;
+const TableHead = styled.thead`
+  background: #1e40af;
+  color: white;
+`;
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background: #f3f4f6;
+  }
+  &:hover {
+    background: #e5e7eb;
+  }
+`;
+const TableHeader = styled.th`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  text-align: left;
+`;
+const TableBody = styled.tbody`
+  background: #ffffff;
+`;
+const TableCell = styled.td`
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+`;
+
+/* Remove Button */
+const RemoveButton = styled.button`
+  padding: 0.5rem 1rem;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  &:hover {
+    background-color: #dc2626;
+  }
+`;
+
+/* ========================
    ManageVolunteers Component
    ======================== */
 const ManageVolunteers = () => {
@@ -232,10 +284,12 @@ const ManageVolunteers = () => {
     const fetchRegistrations = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await fetch("http://localhost:5000/api/host/registrations", {
+        // Ensure the URL here matches your backend route prefix:
+        const response = await fetch("http://localhost:5000/api/opportunities/host/registrations", {
           headers: { Authorization: `Bearer ${token}` },
         });
         const data = await response.json();
+
         // Group registrations by opportunity_id
         const grouped = data.reduce((acc, curr) => {
           const oppId = curr.opportunity_id;
@@ -245,12 +299,13 @@ const ManageVolunteers = () => {
               volunteers: [],
             };
           }
-          // Only add volunteer details if they exist
+          // Add volunteer details if available
           if (curr.volunteer_id) {
             acc[oppId].volunteers.push({
               id: curr.volunteer_id,
               full_name: curr.full_name,
               email: curr.email,
+              // Add any other volunteer data here except address
             });
           }
           return acc;
@@ -366,46 +421,9 @@ const ManageVolunteers = () => {
           )}
         </DashboardContainer>
       </Content>
+      <Footer />
     </PageWrapper>
   );
 };
-
-/* ========================
-   Styled Table Components
-   ======================== */
-const Table = styled.table`
-  width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 2rem;
-`;
-const TableHead = styled.thead`
-  background: #1e40af;
-  color: white;
-`;
-const TableRow = styled.tr``;
-const TableHeader = styled.th`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  text-align: left;
-`;
-const TableBody = styled.tbody`
-  background: #ffffff;
-`;
-const TableCell = styled.td`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-`;
-
-const RemoveButton = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: #ef4444;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  &:hover {
-    background-color: #dc2626;
-  }
-`;
 
 export default ManageVolunteers;

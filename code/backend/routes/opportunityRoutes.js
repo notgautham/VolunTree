@@ -78,7 +78,7 @@ router.post("/signup/:opportunityId", verifyToken, async (req, res) => {
   }
 });
 
-// 🔹 Host views all registered volunteers
+// 🔹 Host views all registered volunteers (including opportunities with no volunteers)
 router.get("/host/registrations", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
     return res.status(403).json({ message: "Access denied" });
@@ -86,11 +86,17 @@ router.get("/host/registrations", verifyToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT v.id, v.full_name, v.email, o.title 
-       FROM volunteer_signups vs
-       JOIN volunteers v ON vs.volunteer_id = v.id
-       JOIN opportunities o ON vs.opportunity_id = o.id
-       WHERE o.host_id = $1`,
+      `SELECT 
+          o.id AS opportunity_id,
+          o.title,
+          v.id AS volunteer_id,
+          v.full_name,
+          v.email
+       FROM opportunities o
+       LEFT JOIN volunteer_signups vs ON o.id = vs.opportunity_id
+       LEFT JOIN volunteers v ON vs.volunteer_id = v.id
+       WHERE o.host_id = $1
+       ORDER BY o.date DESC`,
       [req.user.id]
     );
 
@@ -100,6 +106,7 @@ router.get("/host/registrations", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 // 🔹 Volunteer views their signed-up opportunities
 router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
@@ -172,34 +179,42 @@ router.get("/volunteer", verifyToken, async (req, res) => {
 });
 
 // 🔹 DELETE endpoint to remove a volunteer from an opportunity (host only)
-router.delete("/volunteer/:opportunityId/:volunteerId", verifyToken, async (req, res) => {
-  if (req.user.userType !== "host") {
-    return res.status(403).json({ message: "Access denied" });
-  }
-
-  const { opportunityId, volunteerId } = req.params;
-
-  try {
-    // Verify that the opportunity belongs to the host
-    const oppCheck = await pool.query(
-      "SELECT * FROM opportunities WHERE id = $1 AND host_id = $2",
-      [opportunityId, req.user.id]
-    );
-    if (oppCheck.rows.length === 0) {
-      return res.status(404).json({ message: "Opportunity not found or does not belong to you." });
+router.delete(
+  "/volunteer/:opportunityId/:volunteerId",
+  verifyToken,
+  async (req, res) => {
+    if (req.user.userType !== "host") {
+      return res.status(403).json({ message: "Access denied" });
     }
 
-    // Delete the volunteer signup record
-    await pool.query(
-      "DELETE FROM volunteer_signups WHERE opportunity_id = $1 AND volunteer_id = $2",
-      [opportunityId, volunteerId]
-    );
+    const { opportunityId, volunteerId } = req.params;
 
-    res.json({ message: "Volunteer removed successfully." });
-  } catch (error) {
-    console.error("Error removing volunteer:", error);
-    res.status(500).json({ error: "Internal server error" });
+    try {
+      // Verify that the opportunity belongs to the host
+      const oppCheck = await pool.query(
+        "SELECT * FROM opportunities WHERE id = $1 AND host_id = $2",
+        [opportunityId, req.user.id]
+      );
+      if (oppCheck.rows.length === 0) {
+        return res
+          .status(404)
+          .json({
+            message: "Opportunity not found or does not belong to you.",
+          });
+      }
+
+      // Delete the volunteer signup record
+      await pool.query(
+        "DELETE FROM volunteer_signups WHERE opportunity_id = $1 AND volunteer_id = $2",
+        [opportunityId, volunteerId]
+      );
+
+      res.json({ message: "Volunteer removed successfully." });
+    } catch (error) {
+      console.error("Error removing volunteer:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
   }
-});
+);
 
 export default router;
