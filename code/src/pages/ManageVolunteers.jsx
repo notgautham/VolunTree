@@ -158,7 +158,7 @@ const Circle20 = styled(BgShape)`
 `;
 
 /* ========================
-   Dashboard Styled Components
+   Container & Table Styles
    ======================== */
 const DashboardContainer = styled.div`
   padding: 2rem;
@@ -169,99 +169,53 @@ const DashboardContainer = styled.div`
   position: relative;
   z-index: 1;
 `;
-const SectionTitle = styled.h2`
-  font-size: 2rem;
-  color: #1e40af;
-  margin-bottom: 1rem;
-`;
 
-/* 2x2 Grid for Opportunities */
-const OpportunityGrid = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-`;
-
-/* Opportunity Card with conditional background color */
-const OpportunityCard = styled.div`
-  background: ${(props) => (props.signedUp ? "#d3f9d8" : "#ffffff")};
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  padding: 1rem 1.5rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-`;
-const OpportunityHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
+/* Make the opportunity title smaller and above the table */
 const OpportunityTitle = styled.h3`
-  font-size: 1.8rem;
-  margin: 0;
-`;
-const BasicInfo = styled.div`
-  margin-top: 0.5rem;
-`;
-const ExpandedContent = styled.div`
-  margin-top: 1rem;
-`;
-const VolunteerButton = styled.button`
-  padding: 0.6rem 1.2rem;
-  background-color: #1e40af;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  margin-top: 1rem;
-  &:hover {
-    background-color: #15317e;
-  }
-`;
-const DisabledButton = styled.button`
-  padding: 0.6rem 1.2rem;
-  background-color: #a5a5a5;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: not-allowed;
-  margin-top: 1rem;
+  font-size: 1.3rem;
+  color: #4b2e83;
+  margin-bottom: 0.75rem;
 `;
 
-/* ========================
-   Styled Table Components for Volunteer Management
-   ======================== */
+/* Table styling */
 const Table = styled.table`
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin-bottom: 2rem;
-`;
-const TableHead = styled.thead`
-  background: #1e40af;
-  color: white;
-`;
-const TableRow = styled.tr`
-  &:nth-child(even) {
-    background: #f3f4f6;
-  }
-  &:hover {
-    background: #e5e7eb;
-  }
-`;
-const TableHeader = styled.th`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  text-align: left;
-`;
-const TableBody = styled.tbody`
-  background: #ffffff;
-`;
-const TableCell = styled.td`
-  padding: 0.75rem;
-  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
 `;
 
-/* Remove Button */
+const TableHead = styled.thead`
+  background: #4b2e83;
+  color: #ffffff;
+`;
+
+const TableRow = styled.tr`
+  &:nth-child(even) {
+    background: #f9fafb;
+  }
+  &:hover {
+    background: #f3f4f6;
+  }
+`;
+
+const TableHeader = styled.th`
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  border-bottom: 2px solid #e5e7eb;
+  text-align: left;
+`;
+
+const TableBody = styled.tbody``;
+
+const TableCell = styled.td`
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+`;
+
 const RemoveButton = styled.button`
   padding: 0.5rem 1rem;
   background-color: #ef4444;
@@ -274,9 +228,6 @@ const RemoveButton = styled.button`
   }
 `;
 
-/* ========================
-   ManageVolunteers Component
-   ======================== */
 const ManageVolunteers = () => {
   const [registrations, setRegistrations] = useState({});
 
@@ -284,10 +235,12 @@ const ManageVolunteers = () => {
     const fetchRegistrations = async () => {
       try {
         const token = localStorage.getItem("token");
-        // Ensure the URL here matches your backend route prefix:
-        const response = await fetch("http://localhost:5000/api/opportunities/host/registrations", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await fetch(
+          "http://localhost:5000/api/opportunities/host/registrations",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         const data = await response.json();
 
         // Group registrations by opportunity_id
@@ -299,13 +252,15 @@ const ManageVolunteers = () => {
               volunteers: [],
             };
           }
-          // Add volunteer details if available
           if (curr.volunteer_id) {
             acc[oppId].volunteers.push({
               id: curr.volunteer_id,
               full_name: curr.full_name,
               email: curr.email,
-              // Add any other volunteer data here except address
+              contact_number: curr.contact_number,
+              age: curr.age,
+              gender: curr.gender,
+              address: curr.address,
             });
           }
           return acc;
@@ -320,7 +275,10 @@ const ManageVolunteers = () => {
   }, []);
 
   const handleRemove = async (opportunityId, volunteerId) => {
-    const confirmRemoval = window.confirm("Are you sure you want to remove this volunteer?");
+    // Confirmation popup
+    const confirmRemoval = window.confirm(
+      "Are you sure you want to remove this volunteer?"
+    );
     if (!confirmRemoval) return;
 
     try {
@@ -377,18 +335,27 @@ const ManageVolunteers = () => {
         <Circle19 />
         <Circle20 />
       </BackgroundShapesContainer>
+
       <Content>
         <DashboardContainer>
           <h1>Manage Volunteers</h1>
           {Object.keys(registrations).length > 0 ? (
             Object.keys(registrations).map((oppId) => (
               <div key={oppId}>
-                <SectionTitle>{registrations[oppId].title}</SectionTitle>
+                {/* Smaller title for the opportunity */}
+                <OpportunityTitle>
+                  {registrations[oppId].title}
+                </OpportunityTitle>
+
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableHeader>Name</TableHeader>
+                      <TableHeader>Full Name</TableHeader>
                       <TableHeader>Email</TableHeader>
+                      <TableHeader>Contact Number</TableHeader>
+                      <TableHeader>Age</TableHeader>
+                      <TableHeader>Gender</TableHeader>
+                      <TableHeader>Address</TableHeader>
                       <TableHeader>Action</TableHeader>
                     </TableRow>
                   </TableHead>
@@ -398,8 +365,14 @@ const ManageVolunteers = () => {
                         <TableRow key={vol.id}>
                           <TableCell>{vol.full_name}</TableCell>
                           <TableCell>{vol.email}</TableCell>
+                          <TableCell>{vol.contact_number}</TableCell>
+                          <TableCell>{vol.age}</TableCell>
+                          <TableCell>{vol.gender}</TableCell>
+                          <TableCell>{vol.address}</TableCell>
                           <TableCell>
-                            <RemoveButton onClick={() => handleRemove(oppId, vol.id)}>
+                            <RemoveButton
+                              onClick={() => handleRemove(oppId, vol.id)}
+                            >
                               Remove
                             </RemoveButton>
                           </TableCell>
@@ -407,7 +380,7 @@ const ManageVolunteers = () => {
                       ))
                     ) : (
                       <TableRow>
-                        <TableCell colSpan="3" style={{ textAlign: "center" }}>
+                        <TableCell colSpan="7" style={{ textAlign: "center" }}>
                           No volunteers registered yet
                         </TableCell>
                       </TableRow>
@@ -421,7 +394,6 @@ const ManageVolunteers = () => {
           )}
         </DashboardContainer>
       </Content>
-      <Footer />
     </PageWrapper>
   );
 };

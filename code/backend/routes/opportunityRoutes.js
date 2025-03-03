@@ -78,7 +78,6 @@ router.post("/signup/:opportunityId", verifyToken, async (req, res) => {
   }
 });
 
-// 🔹 Host views all registered volunteers (including opportunities with no volunteers)
 router.get("/host/registrations", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
     return res.status(403).json({ message: "Access denied" });
@@ -91,7 +90,11 @@ router.get("/host/registrations", verifyToken, async (req, res) => {
           o.title,
           v.id AS volunteer_id,
           v.full_name,
-          v.email
+          v.email,
+          v.contact_number,
+          v.age,
+          v.gender,
+          v.address
        FROM opportunities o
        LEFT JOIN volunteer_signups vs ON o.id = vs.opportunity_id
        LEFT JOIN volunteers v ON vs.volunteer_id = v.id
@@ -106,6 +109,7 @@ router.get("/host/registrations", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Internal server error" });
   }
 });
+
 
 
 // 🔹 Volunteer views their signed-up opportunities
