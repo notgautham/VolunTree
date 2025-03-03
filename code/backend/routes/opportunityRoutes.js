@@ -171,4 +171,35 @@ router.get("/volunteer", verifyToken, async (req, res) => {
   }
 });
 
+// 🔹 DELETE endpoint to remove a volunteer from an opportunity (host only)
+router.delete("/volunteer/:opportunityId/:volunteerId", verifyToken, async (req, res) => {
+  if (req.user.userType !== "host") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { opportunityId, volunteerId } = req.params;
+
+  try {
+    // Verify that the opportunity belongs to the host
+    const oppCheck = await pool.query(
+      "SELECT * FROM opportunities WHERE id = $1 AND host_id = $2",
+      [opportunityId, req.user.id]
+    );
+    if (oppCheck.rows.length === 0) {
+      return res.status(404).json({ message: "Opportunity not found or does not belong to you." });
+    }
+
+    // Delete the volunteer signup record
+    await pool.query(
+      "DELETE FROM volunteer_signups WHERE opportunity_id = $1 AND volunteer_id = $2",
+      [opportunityId, volunteerId]
+    );
+
+    res.json({ message: "Volunteer removed successfully." });
+  } catch (error) {
+    console.error("Error removing volunteer:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
 export default router;
