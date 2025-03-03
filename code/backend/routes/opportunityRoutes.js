@@ -16,10 +16,19 @@ router.post("/create", verifyToken, async (req, res) => {
     const result = await pool.query(
       `INSERT INTO opportunities (host_id, title, description, location, date, requirements)
        VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
-      [req.user.id, title, description, location, date, JSON.stringify(requirements)]
+      [
+        req.user.id,
+        title,
+        description,
+        location,
+        date,
+        JSON.stringify(requirements),
+      ]
     );
 
-    res.status(201).json({ message: "Opportunity created!", opportunity: result.rows[0] });
+    res
+      .status(201)
+      .json({ message: "Opportunity created!", opportunity: result.rows[0] });
   } catch (error) {
     console.error("Error creating opportunity:", error);
     res.status(500).json({ error: "Internal server error" });
@@ -36,7 +45,10 @@ router.post("/signup/:opportunityId", verifyToken, async (req, res) => {
 
   try {
     // Check if opportunity exists
-    const opportunityCheck = await pool.query("SELECT * FROM opportunities WHERE id = $1", [opportunityId]);
+    const opportunityCheck = await pool.query(
+      "SELECT * FROM opportunities WHERE id = $1",
+      [opportunityId]
+    );
     if (opportunityCheck.rows.length === 0) {
       return res.status(404).json({ message: "Opportunity not found" });
     }
@@ -48,7 +60,9 @@ router.post("/signup/:opportunityId", verifyToken, async (req, res) => {
     );
 
     if (existingSignup.rows.length > 0) {
-      return res.status(400).json({ message: "You have already signed up for this opportunity" });
+      return res
+        .status(400)
+        .json({ message: "You have already signed up for this opportunity" });
     }
 
     // Insert into signups table
@@ -109,7 +123,6 @@ router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
   }
 });
 
-
 // 🔹 GET host opportunities (updated with volunteer_count)
 router.get("/host-opportunities", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
@@ -132,21 +145,25 @@ router.get("/host-opportunities", verifyToken, async (req, res) => {
   }
 });
 
-
-
-// 🔹 GET endpoint for volunteer opportunities (updated)
+// 🔹 GET endpoint for volunteer opportunities (updated to include is_signed_up)
 router.get("/volunteer", verifyToken, async (req, res) => {
   try {
-    // Return only upcoming opportunities with the count of signed up volunteers
+    const userId = req.user.id;
     const query = `
-      SELECT o.*, COALESCE(COUNT(vs.volunteer_id), 0) AS volunteer_count 
+      SELECT
+        o.*,
+        COALESCE(COUNT(vs.volunteer_id), 0) AS volunteer_count,
+        CASE WHEN MAX(CASE WHEN vs.volunteer_id = $1 THEN 1 ELSE 0 END) = 1
+             THEN true
+             ELSE false
+        END AS is_signed_up
       FROM opportunities o 
       LEFT JOIN volunteer_signups vs ON o.id = vs.opportunity_id 
       WHERE o.date >= CURRENT_TIMESTAMP 
       GROUP BY o.id 
       ORDER BY o.date DESC
     `;
-    const result = await pool.query(query);
+    const result = await pool.query(query, [userId]);
     res.json(result.rows);
   } catch (error) {
     console.error("Error fetching volunteer opportunities:", error);

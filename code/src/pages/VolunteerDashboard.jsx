@@ -190,8 +190,6 @@ const OpportunityCard = styled.div`
   cursor: pointer;
   transition: all 0.3s ease;
 `;
-
-/* Header & Title */
 const OpportunityHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -201,18 +199,12 @@ const OpportunityTitle = styled.h3`
   font-size: 1.8rem;
   margin: 0;
 `;
-
-/* Basic info always shown */
 const BasicInfo = styled.div`
   margin-top: 0.5rem;
 `;
-
-/* Expanded content when card is clicked */
 const ExpandedContent = styled.div`
   margin-top: 1rem;
 `;
-
-/* Volunteer Button */
 const VolunteerButton = styled.button`
   padding: 0.6rem 1.2rem;
   background-color: #1e40af;
@@ -225,8 +217,6 @@ const VolunteerButton = styled.button`
     background-color: #15317e;
   }
 `;
-
-/* Disabled Button for signed-up opportunities */
 const DisabledButton = styled.button`
   padding: 0.6rem 1.2rem;
   background-color: #a5a5a5;
@@ -267,7 +257,14 @@ const VolunteerDashboard = () => {
             return true;
           });
         }
-        setOpportunities(filteredData);
+
+        // Map the is_signed_up flag to local signedUp property
+        const finalData = filteredData.map((opp) => ({
+          ...opp,
+          signedUp: opp.is_signed_up || false,
+        }));
+
+        setOpportunities(finalData);
       } catch (error) {
         console.error("Error fetching volunteer opportunities:", error);
       }
@@ -294,9 +291,11 @@ const VolunteerDashboard = () => {
       if (response.ok) {
         alert("Successfully signed up for this opportunity!");
         // Mark this opportunity as signed up locally
-        setOpportunities(opportunities.map(opp => 
-          opp.id === oppId ? { ...opp, signedUp: true } : opp
-        ));
+        setOpportunities((prev) =>
+          prev.map((opp) =>
+            opp.id === oppId ? { ...opp, signedUp: true } : opp
+          )
+        );
       } else {
         const errData = await response.json();
         alert("Error: " + errData.message);
