@@ -78,6 +78,7 @@ router.post("/signup/:opportunityId", verifyToken, async (req, res) => {
   }
 });
 
+// 🔹 Host views all registered volunteers
 router.get("/host/registrations", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
     return res.status(403).json({ message: "Access denied" });
@@ -110,9 +111,7 @@ router.get("/host/registrations", verifyToken, async (req, res) => {
   }
 });
 
-
-
-// 🔹 Volunteer views their signed-up opportunities
+// 🔹 Volunteer views their signed-up opportunities (UPDATED to include host_name & host_contact)
 router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
   if (req.user.userType !== "volunteer") {
     return res.status(403).json({ message: "Access denied" });
@@ -120,10 +119,20 @@ router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT o.id, o.title, o.location, o.date 
-       FROM volunteer_signups vs
-       JOIN opportunities o ON vs.opportunity_id = o.id
-       WHERE vs.volunteer_id = $1`,
+      `
+      SELECT
+        o.id,
+        o.title,
+        o.location,
+        o.date,
+        h.organization_name AS host_name,
+        h.contact_number AS host_contact
+      FROM volunteer_signups vs
+      JOIN opportunities o ON vs.opportunity_id = o.id
+      JOIN hosts h ON o.host_id = h.id
+      WHERE vs.volunteer_id = $1
+      ORDER BY o.date DESC
+      `,
       [req.user.id]
     );
 
@@ -134,7 +143,7 @@ router.get("/volunteer/my-opportunities", verifyToken, async (req, res) => {
   }
 });
 
-// 🔹 GET host opportunities (updated with volunteer_count)
+// 🔹 GET host opportunities (with volunteer_count)
 router.get("/host-opportunities", verifyToken, async (req, res) => {
   if (req.user.userType !== "host") {
     return res.status(403).json({ message: "Access denied" });
@@ -156,7 +165,7 @@ router.get("/host-opportunities", verifyToken, async (req, res) => {
   }
 });
 
-// 🔹 GET endpoint for volunteer opportunities (updated to include is_signed_up)
+// 🔹 GET endpoint for volunteer opportunities (with is_signed_up)
 router.get("/volunteer", verifyToken, async (req, res) => {
   try {
     const userId = req.user.id;
@@ -182,8 +191,7 @@ router.get("/volunteer", verifyToken, async (req, res) => {
   }
 });
 
-
-// 🔹 DELETE endpoint to remove a volunteer from an opportunity (host only)
+// 🔹 DELETE endpoint to remove volunteer from an opportunity (host only)
 router.delete(
   "/volunteer/:opportunityId/:volunteerId",
   verifyToken,
@@ -222,7 +230,7 @@ router.delete(
   }
 );
 
-
+// 🔹 DELETE endpoint to let volunteers "unregister"
 router.delete("/volunteer/my-opportunities/:opportunityId", verifyToken, async (req, res) => {
   console.log("DELETE /volunteer/my-opportunities route called");
   console.log("User type is:", req.user.userType);
@@ -254,7 +262,5 @@ router.delete("/volunteer/my-opportunities/:opportunityId", verifyToken, async (
     res.status(500).json({ error: "Internal server error" });
   }
 });
-
-
 
 export default router;

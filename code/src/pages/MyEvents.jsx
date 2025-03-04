@@ -92,7 +92,7 @@ const Circle4 = styled(BgShape)`
   width: 220px; height: 220px; top: 20%; left: 40%;
   background: #52c7ee; animation: ${swirl} 10s linear infinite;
 `;
-// ... (Include more circles as needed, up to Circle20)
+// Include more circles if needed...
 
 /* ========================
    4. Additional Styled Components
@@ -118,7 +118,7 @@ const SectionHeader = styled.h2`
 /* Rounded Table Container */
 const TableContainer = styled.div`
   overflow: hidden;
-  border-radius: 10px; /* Rounded corners */
+  border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   margin-bottom: 2rem;
 `;
@@ -127,10 +127,12 @@ const Table = styled.table`
   width: 100%;
   border-collapse: collapse;
 `;
+
 const TableHead = styled.thead`
   background: #1e40af;
   color: white;
 `;
+
 const TableRow = styled.tr`
   &:nth-child(even) {
     background: #f3f4f6;
@@ -139,14 +141,17 @@ const TableRow = styled.tr`
     background: #e5e7eb;
   }
 `;
+
 const TableHeader = styled.th`
   padding: 0.75rem;
   border: 1px solid #ddd;
   text-align: left;
 `;
+
 const TableBody = styled.tbody`
   background: #ffffff;
 `;
+
 const TableCell = styled.td`
   padding: 0.75rem;
   border: 1px solid #ddd;
@@ -184,10 +189,13 @@ export default function MyEvents() {
     const fetchEvents = async () => {
       try {
         const token = localStorage.getItem("token");
-        // Ensure this matches your actual route
-        const response = await fetch("http://localhost:5000/api/opportunities/volunteer/my-opportunities", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        // Our updated route with the "host_name" and "host_contact"
+        const response = await fetch(
+          "http://localhost:5000/api/opportunities/volunteer/my-opportunities",
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
         if (!response.ok) throw new Error("Failed to fetch events");
         const data = await response.json();
         setEvents(data);
@@ -204,12 +212,15 @@ export default function MyEvents() {
   const completedEvents = events.filter((ev) => new Date(ev.date) < new Date());
 
   const handleUnregister = async (eventId) => {
-    const confirmRemoval = window.confirm("Are you sure you want to unregister from this event?");
+    const confirmRemoval = window.confirm(
+      "Are you sure you want to unregister from this event?"
+    );
     if (!confirmRemoval) return;
-  
+
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/opportunities/volunteer/my-opportunities/${eventId}`,
+      const response = await fetch(
+        `http://localhost:5000/api/opportunities/volunteer/my-opportunities/${eventId}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },
@@ -217,7 +228,7 @@ export default function MyEvents() {
       );
       if (!response.ok) throw new Error("Failed to unregister from event");
       alert("Successfully unregistered from the event!");
-  
+
       // Remove from local state
       setEvents((prev) => prev.filter((ev) => ev.id !== eventId));
     } catch (error) {
@@ -225,7 +236,6 @@ export default function MyEvents() {
       alert(error.message);
     }
   };
-  
 
   return (
     <PageWrapper>
@@ -282,11 +292,15 @@ export default function MyEvents() {
                             timeStyle: "short",
                           })}
                         </TableCell>
-                        <TableCell>{dLeft} {dLeft === 1 ? "day" : "days"}</TableCell>
+                        <TableCell>
+                          {dLeft} {dLeft === 1 ? "day" : "days"}
+                        </TableCell>
                         <TableCell>{ev.hours_per_day || "N/A"}</TableCell>
                         <TableCell>{ev.total_days || "N/A"}</TableCell>
                         <TableCell>
-                          <UnregisterButton onClick={() => handleUnregister(ev.id)}>
+                          <UnregisterButton
+                            onClick={() => handleUnregister(ev.id)}
+                          >
                             Unregister
                           </UnregisterButton>
                         </TableCell>
@@ -338,7 +352,9 @@ export default function MyEvents() {
                       <TableCell>{ev.hours_per_day || "N/A"}</TableCell>
                       <TableCell>{ev.total_days || "N/A"}</TableCell>
                       <TableCell>
-                        <UnregisterButton onClick={() => handleUnregister(ev.id)}>
+                        <UnregisterButton
+                          onClick={() => handleUnregister(ev.id)}
+                        >
                           Unregister
                         </UnregisterButton>
                       </TableCell>
@@ -350,8 +366,6 @@ export default function MyEvents() {
           )}
         </DashboardContainer>
       </Content>
-
-      <Footer />
     </PageWrapper>
   );
 }
