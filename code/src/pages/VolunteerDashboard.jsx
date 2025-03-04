@@ -181,7 +181,7 @@ const OpportunityGrid = styled.div`
   gap: 1.5rem;
 `;
 
-/* Opportunity Card with conditional background color */
+/* Opportunity Card */
 const OpportunityCard = styled.div`
   background: ${(props) => (props.signedUp ? "#d3f9d8" : "#ffffff")};
   border-radius: 8px;
@@ -243,22 +243,43 @@ const VolunteerDashboard = () => {
         });
         const data = await response.json();
 
-        // Retrieve volunteer age from localStorage
+        // Parse requirements if they are stored as a JSON string
+        const parsedData = data.map((opp) => ({
+          ...opp,
+          requirements:
+            opp.requirements && typeof opp.requirements === "string"
+              ? JSON.parse(opp.requirements)
+              : opp.requirements,
+        }));
+
+        // Retrieve volunteer's age and gender from localStorage
         const volunteerAgeStr = localStorage.getItem("volunteerAge");
         const volunteerAge = volunteerAgeStr ? parseInt(volunteerAgeStr, 10) : null;
+        const volunteerGender = localStorage.getItem("volunteerGender") || null;
 
-        // Filter opportunities based on age eligibility if requirements exist
-        let filteredData = data;
+        // Filter opportunities based on age and gender requirements
+        let filteredData = parsedData;
         if (volunteerAge !== null) {
-          filteredData = data.filter((opp) => {
+          filteredData = parsedData.filter((opp) => {
+            let ageMatch = true;
             if (opp.requirements && opp.requirements.minAge && opp.requirements.maxAge) {
-              return volunteerAge >= opp.requirements.minAge && volunteerAge <= opp.requirements.maxAge;
+              ageMatch = volunteerAge >= opp.requirements.minAge && volunteerAge <= opp.requirements.maxAge;
             }
-            return true;
+            let genderMatch = true;
+            if (
+              opp.requirements &&
+              opp.requirements.genderPreference &&
+              opp.requirements.genderPreference !== "No Preference" &&
+              volunteerGender
+            ) {
+              genderMatch =
+                volunteerGender.toLowerCase() === opp.requirements.genderPreference.toLowerCase();
+            }
+            return ageMatch && genderMatch;
           });
         }
 
-        // Map the is_signed_up flag to local signedUp property
+        // Map the is_signed_up flag to a local "signedUp" property
         const finalData = filteredData.map((opp) => ({
           ...opp,
           signedUp: opp.is_signed_up || false,
@@ -292,9 +313,7 @@ const VolunteerDashboard = () => {
         alert("Successfully signed up for this opportunity!");
         // Mark this opportunity as signed up locally
         setOpportunities((prev) =>
-          prev.map((opp) =>
-            opp.id === oppId ? { ...opp, signedUp: true } : opp
-          )
+          prev.map((opp) => (opp.id === oppId ? { ...opp, signedUp: true } : opp))
         );
       } else {
         const errData = await response.json();
@@ -366,14 +385,13 @@ const VolunteerDashboard = () => {
                       {opp.requirements && (
                         <>
                           <p>
-                            <strong>Requirements:</strong> Age: {opp.requirements.minAge} - {opp.requirements.maxAge}, Gender: {opp.requirements.genderPreference || "No Preference"}, Work Hours: {opp.requirements.workHours} per day
+                            <strong>Requirements:</strong> Age: {opp.requirements.minAge} - {opp.requirements.maxAge}, Gender:{" "}
+                            {opp.requirements.genderPreference || "No Preference"}, Work Hours: {opp.requirements.workHours} per day
                           </p>
                           {opp.requirements.endDate && opp.requirements.endTime && (
                             <p>
                               <strong>Ends On:</strong>{" "}
-                              {new Date(
-                                `${opp.requirements.endDate}T${opp.requirements.endTime}`
-                              ).toLocaleString(undefined, {
+                              {new Date(`${opp.requirements.endDate}T${opp.requirements.endTime}`).toLocaleString(undefined, {
                                 dateStyle: "medium",
                                 timeStyle: "short",
                               })}

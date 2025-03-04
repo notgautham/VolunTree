@@ -206,16 +206,18 @@ export default function MyEvents() {
   const handleUnregister = async (eventId) => {
     const confirmRemoval = window.confirm("Are you sure you want to unregister from this event?");
     if (!confirmRemoval) return;
-
+  
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/opportunities/volunteer/my-opportunities/${eventId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      });
+      const response = await fetch(`http://localhost:5000/api/opportunities/volunteer/my-opportunities/${eventId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
       if (!response.ok) throw new Error("Failed to unregister from event");
       alert("Successfully unregistered from the event!");
-
+  
       // Remove from local state
       setEvents((prev) => prev.filter((ev) => ev.id !== eventId));
     } catch (error) {
@@ -223,6 +225,7 @@ export default function MyEvents() {
       alert(error.message);
     }
   };
+  
 
   return (
     <PageWrapper>

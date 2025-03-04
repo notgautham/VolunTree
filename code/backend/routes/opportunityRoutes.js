@@ -182,6 +182,7 @@ router.get("/volunteer", verifyToken, async (req, res) => {
   }
 });
 
+
 // 🔹 DELETE endpoint to remove a volunteer from an opportunity (host only)
 router.delete(
   "/volunteer/:opportunityId/:volunteerId",
@@ -220,5 +221,40 @@ router.delete(
     }
   }
 );
+
+
+router.delete("/volunteer/my-opportunities/:opportunityId", verifyToken, async (req, res) => {
+  console.log("DELETE /volunteer/my-opportunities route called");
+  console.log("User type is:", req.user.userType);
+  if (req.user.userType !== "volunteer") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { opportunityId } = req.params;
+  try {
+    // Check if the volunteer is signed up for this opportunity
+    const checkSignup = await pool.query(
+      "SELECT * FROM volunteer_signups WHERE volunteer_id = $1 AND opportunity_id = $2",
+      [req.user.id, opportunityId]
+    );
+
+    if (checkSignup.rows.length === 0) {
+      return res.status(404).json({ message: "You are not registered for this opportunity" });
+    }
+
+    // Delete the signup
+    await pool.query(
+      "DELETE FROM volunteer_signups WHERE volunteer_id = $1 AND opportunity_id = $2",
+      [req.user.id, opportunityId]
+    );
+
+    return res.json({ message: "Successfully unregistered from the event" });
+  } catch (error) {
+    console.error("Error removing volunteer signup:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 
 export default router;
