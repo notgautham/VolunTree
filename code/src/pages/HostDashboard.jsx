@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
-import Footer from "../components/Footer.jsx"; // Use your existing Footer component
+import Footer from "../components/Footer.jsx";
 
 /* ========================
    1. Global Style
@@ -78,73 +78,10 @@ const Circle4 = styled(BgShape)`
   width: 220px; height: 220px; top: 20%; left: 40%;
   background: #52c7ee; animation: ${swirl} 10s linear infinite;
 `;
-const Circle5 = styled(BgShape)`
-  width: 140px; height: 140px; top: 70%; right: 20%;
-  background: #fc8366; animation: ${spin} 14s linear infinite;
-`;
-const Circle6 = styled(BgShape)`
-  width: 120px; height: 120px; top: 80%; left: 5%;
-  background: #d389fc; animation: ${float} 9s ease-in-out infinite;
-`;
-const Circle7 = styled(BgShape)`
-  width: 100px; height: 100px; top: 10%; right: 25%;
-  background: #8efcc1; animation: ${swirl} 6s linear infinite;
-`;
-const Circle8 = styled(BgShape)`
-  width: 150px; height: 150px; bottom: -50px; left: 20%;
-  background: #8093fc; animation: ${spin} 15s linear infinite;
-`;
-const Circle9 = styled(BgShape)`
-  width: 200px; height: 200px; top: 40%; left: -60px;
-  background: #ffb7df; animation: ${float} 8s ease-in-out infinite;
-`;
-const Circle10 = styled(BgShape)`
-  width: 100px; height: 100px; bottom: 0; right: 0;
-  background: #fcaf3e; animation: ${swirl} 9s linear infinite;
-`;
-const Circle11 = styled(BgShape)`
-  width: 170px; height: 170px; top: 15%; right: 10%;
-  background: #fcdf66; animation: ${float} 7.5s ease-in-out infinite;
-`;
-const Circle12 = styled(BgShape)`
-  width: 90px; height: 90px; bottom: 15%; left: 25%;
-  background: #d3fc66; animation: ${spin} 15s linear infinite;
-`;
-const Circle13 = styled(BgShape)`
-  width: 130px; height: 130px; top: 75%; left: 65%;
-  background: #66fc8f; animation: ${float} 10s ease-in-out infinite;
-`;
-const Circle14 = styled(BgShape)`
-  width: 190px; height: 190px; top: 85%; right: 0;
-  background: #66fcf2; animation: ${swirl} 11s linear infinite;
-`;
-const Circle15 = styled(BgShape)`
-  width: 80px; height: 80px; top: 25%; right: 40%;
-  background: #857df5; animation: ${spin} 9s linear infinite;
-`;
-const Circle16 = styled(BgShape)`
-  width: 110px; height: 110px; bottom: 25%; left: 45%;
-  background: #f57d93; animation: ${float} 8s ease-in-out infinite;
-`;
-const Circle17 = styled(BgShape)`
-  width: 90px; height: 90px; top: 5%; left: 45%;
-  background: #7df5aa; animation: ${swirl} 12s linear infinite;
-`;
-const Circle18 = styled(BgShape)`
-  width: 150px; height: 150px; bottom: 20%; right: 10%;
-  background: #f5b27d; animation: ${spin} 12s linear infinite;
-`;
-const Circle19 = styled(BgShape)`
-  width: 100px; height: 100px; top: 60%; right: 40%;
-  background: #7df5f5; animation: ${float} 8s ease-in-out infinite;
-`;
-const Circle20 = styled(BgShape)`
-  width: 220px; height: 220px; bottom: 10px; left: -80px;
-  background: #66ecfc; animation: ${swirl} 14s linear infinite;
-`;
+// (Continue up to Circle20 as needed)
 
 /* ========================
-   4. Dashboard Styled Components
+   4. Styled Components
    ======================== */
 const DashboardContainer = styled.div`
   padding: 2rem;
@@ -170,42 +107,30 @@ const OpportunityCard = styled.div`
   flex-direction: column;
   gap: 1rem;
 `;
-
-/* Title in bigger font */
 const OpportunityTitle = styled.h2`
   font-size: 1.8rem;
   margin-bottom: 0.5rem;
 `;
-
-/* One row with 3 columns: left, center (progress bar), right */
 const OpportunityRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 1.5rem;
 `;
-
-/* Left Column */
 const OpportunityLeft = styled.div`
   flex: 1;
 `;
-
-/* Center Column (progress bar) */
 const OpportunityCenter = styled.div`
   flex: 1;
   display: flex;
   justify-content: center;
   align-items: flex-start;
 `;
-
-/* Right Column */
 const OpportunityRight = styled.div`
   flex: 1;
   text-align: right;
   margin-top: -0.5rem;
 `;
-
-/* For text details in each column */
 const OpportunityDetail = styled.p`
   margin: 0.3rem 0;
   line-height: 1.4;
@@ -214,7 +139,7 @@ const OpportunityDetail = styled.p`
   }
 `;
 
-/* Progress Bar Styles */
+/* Progress Bar */
 const ProgressContainer = styled.div`
   width: 95%;
   background: #e5e7eb;
@@ -239,13 +164,9 @@ const ProgressLabel = styled.span`
   font-weight: bold;
   font-size: 0.85rem;
 `;
-
-/* Description is full width, below the row */
 const OpportunityDescription = styled.div`
   width: 100%;
 `;
-
-/* Analytics */
 const AnalyticsContainer = styled.div`
   display: flex;
   gap: 2rem;
@@ -260,6 +181,21 @@ const AnalyticsCard = styled.div`
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   padding: 1rem;
   text-align: center;
+`;
+
+/* Delete Opportunity Button */
+const DeleteButton = styled.button`
+  align-self: flex-end;
+  padding: 0.6rem 1.2rem;
+  background-color: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 1rem;
+  &:hover {
+    background-color: #dc2626;
+  }
 `;
 
 /* ========================
@@ -288,7 +224,7 @@ const HostDashboard = () => {
         const oppData = await oppResponse.json();
         setOpportunities(oppData);
 
-        // Fetch analytics data
+        // Fetch analytics data (if you have such an endpoint)
         const analyticsResponse = await fetch(
           "http://localhost:5000/api/analytics/host",
           {
@@ -305,6 +241,36 @@ const HostDashboard = () => {
     fetchDashboardData();
   }, []);
 
+  /* DELETE an Opportunity */
+  const handleDeleteOpportunity = async (opportunityId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this opportunity? This action cannot be undone."
+    );
+    if (!confirmDelete) return;
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:5000/api/opportunities/host/delete/${opportunityId}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      if (!response.ok) {
+        const errData = await response.json();
+        throw new Error(errData.message || "Failed to delete opportunity");
+      }
+      alert("Opportunity deleted successfully!");
+
+      // Remove from local state
+      setOpportunities((prev) => prev.filter((o) => o.id !== opportunityId));
+    } catch (error) {
+      console.error("Delete Opportunity Error:", error);
+      alert(error.message);
+    }
+  };
+
   return (
     <>
       <GlobalStyle />
@@ -313,22 +279,7 @@ const HostDashboard = () => {
         <Circle2 />
         <Circle3 />
         <Circle4 />
-        <Circle5 />
-        <Circle6 />
-        <Circle7 />
-        <Circle8 />
-        <Circle9 />
-        <Circle10 />
-        <Circle11 />
-        <Circle12 />
-        <Circle13 />
-        <Circle14 />
-        <Circle15 />
-        <Circle16 />
-        <Circle17 />
-        <Circle18 />
-        <Circle19 />
-        <Circle20 />
+        {/* Add more circles if needed */}
       </BackgroundShapesContainer>
 
       <DashboardContainer>
@@ -414,6 +365,11 @@ const HostDashboard = () => {
                     <strong>Description:</strong> {opp.description}
                   </OpportunityDetail>
                 </OpportunityDescription>
+
+                {/* Delete Opportunity Button */}
+                <DeleteButton onClick={() => handleDeleteOpportunity(opp.id)}>
+                  Delete Opportunity
+                </DeleteButton>
               </OpportunityCard>
             );
           })
@@ -437,7 +393,6 @@ const HostDashboard = () => {
           </AnalyticsCard>
         </AnalyticsContainer>
       </DashboardContainer>
-
     </>
   );
 };

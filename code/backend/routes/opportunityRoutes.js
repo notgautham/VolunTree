@@ -263,4 +263,44 @@ router.delete("/volunteer/my-opportunities/:opportunityId", verifyToken, async (
   }
 });
 
+// Delete an opportunity (host only) and remove all volunteer signups
+router.delete("/host/delete/:opportunityId", verifyToken, async (req, res) => {
+  if (req.user.userType !== "host") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+
+  const { opportunityId } = req.params;
+
+  try {
+    // 1. Verify the opportunity belongs to this host
+    const checkOpp = await pool.query(
+      "SELECT * FROM opportunities WHERE id = $1 AND host_id = $2",
+      [opportunityId, req.user.id]
+    );
+    if (checkOpp.rows.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "Opportunity not found or not owned by you." });
+    }
+
+    // 2. Delete all volunteer signups for this opportunity
+    await pool.query(
+      "DELETE FROM volunteer_signups WHERE opportunity_id = $1",
+      [opportunityId]
+    );
+
+    // 3. Delete the opportunity itself
+    await pool.query(
+      "DELETE FROM opportunities WHERE id = $1 AND host_id = $2",
+      [opportunityId, req.user.id]
+    );
+
+    res.json({ message: "Opportunity and its signups deleted successfully." });
+  } catch (error) {
+    console.error("Error deleting opportunity:", error);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
 export default router;
