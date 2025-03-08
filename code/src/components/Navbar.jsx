@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import picture2 from "../assets/picture2.png";
 
 const NavbarContainer = styled.nav`
   background-color: #ffffff;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  padding: 1rem 2rem;
+  padding: 1rem 1.5rem;
   display: flex;
   align-items: center;
   position: fixed;
@@ -21,6 +22,7 @@ const Logo = styled(Link)`
   font-size: 1.8rem;
   font-weight: bold;
   color: #1e40af;
+  margin-right: 1rem;
   text-decoration: none;
 `;
 
@@ -32,12 +34,12 @@ const MainLinksContainer = styled.div`
   /* When authenticated, we want space between left (public links) and right (auth links);
      when not, we simply center the public links */
   justify-content: ${(props) => (props.authenticated ? "space-between" : "center")};
-  margin-left: ${(props) => (props.authenticated ? "2rem" : "0")};
+  margin-left: ${(props) => (props.authenticated ? "1rem" : "0")};
 `;
 
 const PublicLinks = styled.div`
   display: flex;
-  gap: 1.5rem;
+  gap: 1.1rem;
   align-items: center;
   /* If not authenticated, center these links */
   ${(props) =>
@@ -135,6 +137,7 @@ const Navbar = () => {
 
   return (
     <NavbarContainer>
+      <img src={picture2} alt="Logo" style={{ height: "1.8rem", marginRight: "0.5rem" }} />
       <Logo to="/">VolunTree</Logo>
       <MainLinksContainer authenticated={isAuthenticated}>
         <PublicLinks authenticated={isAuthenticated}>
