@@ -62,5 +62,3 @@ npm run dev
 - **NGO Verification System** - Implement a verification process for NGOs to ensure authenticity.
 
 ---
-
-Let me know if you'd like to modify or add anything! 🚀
