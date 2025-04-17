@@ -101,12 +101,6 @@ provider "aws" {
   region = "ap-south-1" # Mumbai (or update if needed)
 }
 
-# Key Pair
-"""resource "aws_key_pair" "voluntree_key" {
-  key_name   = "voluntree-key"
-  public_key = file("C:/Users/vgaut/.ssh/voluntree-key.pub")
-}"""
-
 data "aws_vpc" "default" {
   default = true
 }
