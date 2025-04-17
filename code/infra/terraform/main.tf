@@ -102,10 +102,10 @@ provider "aws" {
 }
 
 # Key Pair
-resource "aws_key_pair" "voluntree_key" {
+"""resource "aws_key_pair" "voluntree_key" {
   key_name   = "voluntree-key"
   public_key = file("C:/Users/vgaut/.ssh/voluntree-key.pub")
-}
+}"""
 
 data "aws_vpc" "default" {
   default = true
@@ -154,7 +154,8 @@ resource "aws_security_group" "ec2_sg" {
 resource "aws_instance" "backend" {
   ami = "ami-0f58b397bc5c1f2e8"
   instance_type = "t3.micro"
-  key_name      = aws_key_pair.voluntree_key.key_name
+  #key_name      = aws_key_pair.voluntree_key.key_name\
+  key_name = "voluntree-key"
   security_groups = [aws_security_group.ec2_sg.name]
   tags = {
     Name = "voluntree-backend"
