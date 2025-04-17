@@ -74,26 +74,6 @@ resource "aws_instance" "backend" {
   }
 }
 
-# --------------------------
-# ✅ RDS POSTGRESQL
-# --------------------------
-resource "aws_db_instance" "postgres" {
-  identifier              = "voluntree-db"
-  engine                  = "postgres"
-  engine_version          = "15.12"
-  instance_class          = "db.t3.micro"
-  allocated_storage       = 20
-  db_name                 = "voluntree"
-  username                = "voluntree_user"
-  password                = "Admin12345"
-  skip_final_snapshot     = true
-  publicly_accessible     = true
-  vpc_security_group_ids  = [aws_security_group.frontend_sg.id]
-
-  tags = {
-    Name = "voluntree-rds"
-  }
-}
 
 # --------------------------
 # ✅ S3 BUCKET FOR FRONTEND
