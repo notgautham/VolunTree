@@ -107,7 +107,7 @@ data "aws_vpc" "default" {
 
 # Security Group for EC2
 resource "aws_security_group" "ec2_sg" {
-  name        = "voluntree-ec2-sg"
+  name        = "voluntree-ec2-sg-frontendd"
   description = "Allow SSH and backend port"
   vpc_id      = data.aws_vpc.default.id
 
@@ -150,7 +150,7 @@ resource "aws_instance" "backend" {
   instance_type = "t3.micro"
   #key_name      = aws_key_pair.voluntree_key.key_name\
   key_name = "voluntree-key"
-  security_groups = [aws_security_group.ec2_sg.name]
+  security_groups = [aws_security_group.frontend_sg.name]  # ✅ correct reference
   tags = {
     Name = "voluntree-backend"
   }
