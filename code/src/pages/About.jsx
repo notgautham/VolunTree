@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import styled, { createGlobalStyle, keyframes } from "styled-components";
 
-/* ========================
+/* ================================
    1. Global Style
    ======================== */
 const GlobalStyle = createGlobalStyle`
