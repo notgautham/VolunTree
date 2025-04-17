@@ -150,7 +150,7 @@ resource "aws_instance" "backend" {
   instance_type = "t3.micro"
   #key_name      = aws_key_pair.voluntree_key.key_name\
   key_name = "voluntree-key"
-  security_groups = [aws_security_group.frontend_sg.name]  # ✅ correct reference
+  security_groups = [aws_security_group.frontend_sg.name]
   tags = {
     Name = "voluntree-backend"
   }
@@ -169,7 +169,7 @@ resource "aws_db_instance" "postgres" {
   skip_final_snapshot = true
   publicly_accessible = true
 
-  vpc_security_group_ids = [aws_security_group.ec2_sg.id]
+  vpc_security_group_ids = [aws_security_group.frontend_sg.id]
 
   tags = {
     Name = "voluntree-rds"
